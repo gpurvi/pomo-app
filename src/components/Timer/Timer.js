@@ -4,33 +4,34 @@ import moment from 'moment';
 
 
 class Timer extends Component {
+    // state: timeLeft and timerState:__timerDuration must be equal
+    // (in future i may found better solution)
     state = {
         started: false,
-        timeLeft: 5000,
+        timeLeft: 10000,
     };
     //internal timer state
     timerState = {
         __timerId: undefined,
-        __endTime: 0,
-        __timerDuration: 5000
+        __timerDuration: 10000
     };
 
-    // componentDidMount = () => {
-    //     if (JSON.parse(localStorage.getItem('started')) === true) {
-    //         this.setState(() => ({
-    //             time: moment(JSON.parse(localStorage.getItem('endTime'))).valueOf()
-    //         }));
-    //     }
-    // };
-    //
-    // componentWillUnmount = () => {
-    //
-    // };
+    componentDidMount() {
+        const timeLeft = JSON.parse(localStorage.getItem('timerEnd')) - new Date().valueOf();
+        if (timeLeft > 0) {
+            this.setState(() => ({
+                timeLeft
+            }));
+            this.startCountdown(false);
+        }
+    };
+
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.timeLeft === 0) {
-            this.stopCountdown();
+        if (Math.floor(this.state.timeLeft / 1000) === 0) {
+            this.setState(() => ({started: false}));
             this.playSound();
+            this.stopCountdown();
         }
     };
 
@@ -38,30 +39,31 @@ class Timer extends Component {
         // use setState optional callback to start or stop timer
         this.setState((prevState) => ({started: !prevState.started}), () => {
             if (this.state.started) {
-                this.startCountdown()
+                this.startCountdown();
             } else {
                 this.stopCountdown();
             }
         });
     };
 
-    startCountdown() {
-        this.timerState.__endTime = (new Date().valueOf() + this.timerState.__timerDuration);
+    //accepts boolean argument to differentiate
+    // between new timer or started from componentDidUpdate()
+    startCountdown(startNewTimer = true) {
+        if (startNewTimer) {
+            this.saveEndTime();
+        }
         this.timerState.__timerId = setInterval(() => {
             this.setState((prevState) => ({
                 timeLeft: prevState.timeLeft - 1000
             }));
         }, 1000);
-        // localStorage.setItem('endTime', this.calculateEndTime());
-        // localStorage.setItem('started', JSON.stringify(this.state.started));
     };
 
     stopCountdown() {
         this.setState(() => ({
-            timeLeft: 5000
+            timeLeft: this.timerState.__timerDuration
         }));
         clearInterval(this.timerState.__timerId);
-        this.timerState.__endTime = 0;
     };
 
     playSound() {
@@ -70,6 +72,11 @@ class Timer extends Component {
         });
         sound.play();
     };
+
+    saveEndTime() {
+        const endTime = this.timerState.__timerDuration + new Date().valueOf();
+        localStorage.setItem('timerEnd', JSON.stringify(endTime));
+    }
 
     displayTime() {
         return moment(this.state.timeLeft).format('mm:ss');

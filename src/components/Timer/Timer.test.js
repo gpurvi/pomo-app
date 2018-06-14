@@ -15,7 +15,6 @@ describe('startCountdown should work properly', () => {
 
     test('should change timerState object', () => {
         expect(wrapper.instance().timerState.__timerId).not.toBeUndefined();
-        expect(wrapper.instance().timerState.__endTime).toBeGreaterThan(0);
     });
 
     test('should call setInterval', () => {
@@ -38,9 +37,6 @@ describe('stopCountdown should work properly', () => {
         expect(clearInterval).toHaveBeenCalled();
     });
 
-    test('should set __endTime to 0', () => {
-        expect(wrapper.instance().timerState.__endTime).toBe(0);
-    });
 });
 
 describe('should start timer', () => {

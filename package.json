@@ -10,9 +10,10 @@
     "react-scripts": "1.1.4"
   },
   "devDependencies": {
-    "react-test-renderer": "^16.4.1",
     "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1"
+    "enzyme-adapter-react-16": "^1.1.1",
+    "jest-localstorage-mock": "^2.2.0",
+    "react-test-renderer": "^16.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
