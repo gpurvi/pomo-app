@@ -8,7 +8,7 @@ class Timer extends Component {
     // (in future i may found better solution)
     state = {
         started: false,
-        timeLeft: 10000,
+        timeLeft: 10000
     };
     //internal timer state
     timerState = {
@@ -28,6 +28,17 @@ class Timer extends Component {
 
 
     componentDidUpdate(prevProps, prevState) {
+        // initial start from outside
+        if( this.props.startTimer && !this.state.started){
+            this.setState(() => ({started: true}));
+            this.startCountdown();
+        }
+        //
+        if(!this.props.startTimer && this.state.started){
+            this.setState(() => ({started: false}));
+            // this.playSound();
+            this.stopCountdown();
+        }
         if (Math.floor(this.state.timeLeft / 1000) === 0) {
             this.setState(() => ({started: false}));
             this.playSound();
@@ -35,20 +46,11 @@ class Timer extends Component {
         }
     };
 
-    onClickHandler = () => {
-        // use setState optional callback to start or stop timer
-        this.setState((prevState) => ({started: !prevState.started}), () => {
-            if (this.state.started) {
-                this.startCountdown();
-            } else {
-                this.stopCountdown();
-            }
-        });
-    };
 
     //accepts boolean argument to differentiate
     // between new timer or started from componentDidUpdate()
     startCountdown(startNewTimer = true) {
+        this.props.onTimerStart();
         if (startNewTimer) {
             this.saveEndTime();
         }
@@ -60,6 +62,7 @@ class Timer extends Component {
     };
 
     stopCountdown() {
+        this.props.onTimerStop();
         this.setState(() => ({
             timeLeft: this.timerState.__timerDuration
         }));
@@ -86,8 +89,6 @@ class Timer extends Component {
         return (
             <div>
                 <h1>{this.displayTime()}</h1>
-                <button onClick={this.onClickHandler}>{this.state.started ? 'Stop' : 'Start'}</button>
-                {/*<button onClick={this.onResetHan}>Stop</button>*/}
             </div>
         );
     }
