@@ -1,6 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import MainPage from './components/MainPage';
+import SessionNameTimerBlock from "./components/SessionNameTimerBlock";
 
-ReactDOM.render(<MainPage />, document.getElementById('root'));
+// import {Provider} from 'react-redux';
+// import MainPage from './components/MainPage';
+// import configureStore from './store/configureStore';
+// import './playground/redux-pmodor';
+
+// const store = configureStore();
+
+// const jsx = (
+//     <Provider store={store}>
+//         <MainPage/>
+//     </Provider>
+// );
+
+
+ReactDOM.render(<SessionNameTimerBlock defaultSeesionName="app" defaultTimerDuration={5000}/>, document.getElementById('root'));
