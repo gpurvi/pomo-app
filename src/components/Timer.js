@@ -118,7 +118,7 @@ export default class Timer extends Component {
         __timerId: undefined
     };
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (Math.floor((this.props.timerDuration - this.state.timePassed) / 1000) < 0) {
             this.playSound();
             this.stopCountdown();
@@ -161,7 +161,6 @@ export default class Timer extends Component {
         }));
         clearInterval(this.timerState.__timerId);
     };
-
 
     playSound() {
         const sound = new Howl({

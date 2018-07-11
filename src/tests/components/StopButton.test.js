@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import StopButton from '../components/StopButton';
+import StopButton from '../../components/StopButton';
 
 test('renders StopButton with grey stop image', () => {
     const wrapper = shallow(<StopButton/>);
@@ -14,8 +14,8 @@ test('renders StopButton with black stop image', () => {
 });
 
 test('when clicked calls onStopHandler', () => {
-    const wrapper = shallow(<StopButton/>);
-    const onStopHandler = jest.spyOn(, 'stopCountdown');
+    const onStopHandler = jest.fn();
+    const wrapper = shallow(<StopButton onStopHandler={onStopHandler}/>);
     wrapper.simulate('click');
-    expect(wrapper).toMatchSnapshot();
+    expect(onStopHandler).toHaveBeenCalled();
 });
