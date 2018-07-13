@@ -12,7 +12,7 @@ class SessionNameTimerBlock extends React.Component {
             timerStarted: false,
             timerPaused: false,
             timePassed: 0,
-            sessionName: 'dsf'
+            sessionName: this.props.defaultSessionName
         };
 
         this.startPauseClickHandler = this.startPauseClickHandler.bind(this);
@@ -22,12 +22,18 @@ class SessionNameTimerBlock extends React.Component {
     }
 
     componentDidMount() {
-        const timerEnd = JSON.parse(localStorage.getItem('timerEnd'));
-        const timeLeft = timerEnd - new Date().valueOf();
+        //get all saved state from storage to resume previous state
         const timerStarted = JSON.parse(localStorage.getItem('timerStarted'));
-        const timerPaused = JSON.parse(localStorage.getItem('timerPaused'));
         const sessionName = JSON.parse(localStorage.getItem('sessionName'));
-        const timerPausedAt = JSON.parse(localStorage.getItem('timerPausedAt'));
+        let timerEnd, timeLeft, timerPaused, timerPausedAt;
+        //lazy load variables
+        if (timerStarted) {
+            timerEnd = JSON.parse(localStorage.getItem('timerEnd'));
+            timeLeft = timerEnd - new Date().valueOf();
+            timerPaused = JSON.parse(localStorage.getItem('timerPaused'));
+            timerPausedAt = JSON.parse(localStorage.getItem('timerPausedAt'));
+        }
+
         // started and not paused
         if (timeLeft > 0 && timerStarted && !timerPaused) {
             this.setState(() => ({
@@ -44,7 +50,7 @@ class SessionNameTimerBlock extends React.Component {
                 timerDuration: timerEnd - timerPausedAt
             }));
         }
-        if (sessionName != null) {
+        if (sessionName !== null) {
             this.setState(() => ({
                 sessionName
             }));

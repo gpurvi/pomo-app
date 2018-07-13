@@ -17,4 +17,6 @@ import SessionNameTimerBlock from "./components/SessionNameTimerBlock";
 // );
 
 
-ReactDOM.render(<SessionNameTimerBlock defaultSeesionName="app" defaultTimerDuration={5000}/>, document.getElementById('root'));
+ReactDOM.render(<SessionNameTimerBlock
+    defaultSessionName="app"
+    defaultTimerDuration={5000}/>, document.getElementById('root'));
