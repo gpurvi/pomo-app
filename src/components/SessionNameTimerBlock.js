@@ -11,22 +11,37 @@ class SessionNameTimerBlock extends React.Component {
             timerDuration: this.props.defaultTimerDuration,
             timerStarted: false,
             timerPaused: false,
-            sessionName: this.props.defaultSessionName
+            timePassed: 0,
+            sessionName: 'dsf'
         };
 
         this.startPauseClickHandler = this.startPauseClickHandler.bind(this);
         this.onStopHandler = this.onStopHandler.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
+        this.onTickHandler = this.onTickHandler.bind(this);
     }
 
     componentDidMount() {
-        const timeLeft = JSON.parse(localStorage.getItem('timerEnd')) - new Date().valueOf();
+        const timerEnd = JSON.parse(localStorage.getItem('timerEnd'));
+        const timeLeft = timerEnd - new Date().valueOf();
         const timerStarted = JSON.parse(localStorage.getItem('timerStarted'));
+        const timerPaused = JSON.parse(localStorage.getItem('timerPaused'));
         const sessionName = JSON.parse(localStorage.getItem('sessionName'));
-        if (timeLeft > 0 && timerStarted) {
+        const timerPausedAt = JSON.parse(localStorage.getItem('timerPausedAt'));
+        // started and not paused
+        if (timeLeft > 0 && timerStarted && !timerPaused) {
             this.setState(() => ({
                 timerStarted: true,
+                timerPaused: false,
                 timerDuration: timeLeft
+            }));
+        }
+        // started and paused
+        if (timerStarted && timerPaused) {
+            this.setState(() => ({
+                timerStarted: true,
+                timerPaused: true,
+                timerDuration: timerEnd - timerPausedAt
             }));
         }
         if (sessionName != null) {
@@ -38,15 +53,23 @@ class SessionNameTimerBlock extends React.Component {
 
     startPauseClickHandler() {
         this.setState((prevState) => {
+            //start timer
             if (!prevState.timerStarted && !prevState.timerPaused) {
                 const endTime = this.state.timerDuration + new Date().valueOf();
                 localStorage.setItem('timerEnd', JSON.stringify(endTime));
                 localStorage.setItem('timerStarted', JSON.stringify(true));
                 localStorage.setItem('sessionName', JSON.stringify(this.state.sessionName));
                 return {timerStarted: !prevState.timerStarted};
-            } else if (prevState.timerStarted && !prevState.timerPaused) {
+            }
+            // pause timer
+            if (prevState.timerStarted && !prevState.timerPaused) {
+                localStorage.setItem('timerPausedAt', JSON.stringify(new Date().valueOf()));
+                localStorage.setItem('timerPaused', JSON.stringify(true));
                 return {timerPaused: true};
-            } else if (prevState.timerStarted && prevState.timerPaused) {
+            }
+            // resume timer
+            if (prevState.timerStarted && prevState.timerPaused) {
+                localStorage.setItem('timerPaused', JSON.stringify(false));
                 return {timerPaused: false};
             }
         });
@@ -57,8 +80,16 @@ class SessionNameTimerBlock extends React.Component {
             timerStarted: false,
             timerPaused: false,
             timerDuration: this.props.defaultTimerDuration,
+            timePassed: 0
         }));
         localStorage.setItem('timerStarted', JSON.stringify(false));
+        localStorage.setItem('timerPaused', JSON.stringify(false));
+    }
+
+    onTickHandler() {
+        this.setState((prevState) => ({
+            timePassed: prevState.timePassed + 1000
+        }));
     }
 
     onChangeHandler(e) {
@@ -76,7 +107,9 @@ class SessionNameTimerBlock extends React.Component {
                     timerDuration={this.state.timerDuration}
                     timerStarted={this.state.timerStarted}
                     timerPaused={this.state.timerPaused}
+                    timePassed={this.state.timePassed}
                     onTimerEndHandler={this.onStopHandler}
+                    onTick={this.onTickHandler}
                 />
                 <SessionName
                     onChangeHandler={this.onChangeHandler}

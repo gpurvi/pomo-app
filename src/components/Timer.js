@@ -110,29 +110,31 @@ import {Howl} from 'howler';
 // export default connect(mapStateToProps)(Timer);
 
 export default class Timer extends Component {
-    state = {
-        timePassed: 0
-    };
+    constructor(props) {
+        super(props);
+    }
+
     // object to keep timer internal data
     timerState = {
         __timerId: undefined
     };
 
     componentDidUpdate(prevProps) {
-        if (Math.floor((this.props.timerDuration - this.state.timePassed) / 1000) < 0) {
+        // stops timer when time ends
+        if (Math.floor((this.props.timerDuration - this.props.timePassed) / 1000) < 0) {
             this.playSound();
-            this.stopCountdown();
+            clearInterval(this.timerState.__timerId);
             this.props.onTimerEndHandler();
         }
-
+        //starts and stops timer
         if ((prevProps.timerStarted !== this.props.timerStarted) && this.props.timerStarted) {
             this.startCountdown();
         } else if ((prevProps.timerStarted !== this.props.timerStarted) && !this.props.timerStarted) {
-            this.stopCountdown();
+            clearInterval(this.timerState.__timerId);
         }
-
+        // pauses running timer and resumes
         if ((prevProps.timerPaused !== this.props.timerPaused) && this.props.timerPaused) {
-            this.pauseCountdown();
+            clearInterval(this.timerState.__timerId);
         } else if ((prevProps.timerPaused !== this.props.timerPaused)
             && !this.props.timerPaused
             && this.props.timerStarted) {
@@ -142,24 +144,8 @@ export default class Timer extends Component {
 
     startCountdown() {
         this.timerState.__timerId = setInterval(() => {
-            this.setState((prevState) => ({
-                timePassed: prevState.timePassed + 1000
-            }));
+            this.props.onTick();
         }, 1000);
-    };
-
-    stopCountdown() {
-        this.setState(() => ({
-            timePassed: 0
-        }));
-        clearInterval(this.timerState.__timerId);
-    };
-
-    pauseCountdown() {
-        this.setState((prevState) => ({
-            timePassed: prevState.timePassed
-        }));
-        clearInterval(this.timerState.__timerId);
     };
 
     playSound() {
@@ -170,7 +156,7 @@ export default class Timer extends Component {
     };
 
     displayTime() {
-        return moment(this.props.timerDuration - this.state.timePassed).format('mm:ss');
+        return moment(this.props.timerDuration - this.props.timePassed).format('mm:ss');
     };
 
     render() {
