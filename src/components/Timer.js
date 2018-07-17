@@ -110,10 +110,6 @@ import {Howl} from 'howler';
 // export default connect(mapStateToProps)(Timer);
 
 export default class Timer extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     // object to keep timer internal data
     timerState = {
         __timerId: undefined
