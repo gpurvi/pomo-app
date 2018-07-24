@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import DateSessions from './components/DateSessions';
+import TimerPage from './components/TimerPage';
 
 // import SessionNameTimerBlock from "./components/SessionNameTimerBlock";
 
@@ -23,4 +23,4 @@ import DateSessions from './components/DateSessions';
 //     defaultTimerDuration={5000}/>
 
 
-ReactDOM.render(<DateSessions/> , document.getElementById('root'));
+ReactDOM.render(<TimerPage/> , document.getElementById('root'));

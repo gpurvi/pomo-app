@@ -117,7 +117,7 @@ export default class Timer extends Component {
 
     componentDidUpdate(prevProps) {
         // stops timer when time ends
-        if (Math.floor((this.props.timerDuration - this.props.timePassed) / 1000) < 0) {
+        if (Math.floor((this.props.displayTime) / 1000) < 0) {
             this.playSound();
             clearInterval(this.timerState.__timerId);
             this.props.onTimerEndHandler();
@@ -151,14 +151,10 @@ export default class Timer extends Component {
         sound.play();
     };
 
-    displayTime() {
-        return moment(this.props.timerDuration - this.props.timePassed).format('mm:ss');
-    };
-
     render() {
         return (
             <div>
-                <h1>{this.displayTime()}</h1>
+                <h1>{moment(this.props.displayTime).format('mm:ss')}</h1>
             </div>
         );
     }

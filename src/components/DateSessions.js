@@ -2,30 +2,12 @@ import React from 'react';
 import DatePicker from "./DatePicker";
 import SessionsTable from "./SessionsTable";
 import moment from "moment/moment";
-//
-// const dummyData1 = [
-//     {sessionName: "app", count: 5, timeInMillis: 0},
-//     {sessionName: "guru", count: 4, timeInMillis: 6000000},
-//     {sessionName: "zeta", count: 1, timeInMillis: 1500000},
-//     {sessionName: "null", count: 0, timeInMillis: 3600000 * 2},
-// ];
-//
-// const dummyData2 = [
-//     {sessionName: "app", count: 5, timeInMillis: 0},
-// ];
-//
-// const dummyData3 = [
-//     {sessionName: "gu1221ru", count: 4, timeInMillis: 6000000},
-//     {sessionName: "zetdfdsfa", count: 1, timeInMillis: 1500000},
-//     {sessionName: "nudsfdsfll", count: 0, timeInMillis: 3600000 * 2},
-// ];
 
 export default class DateSessions extends React.Component {
     constructor(props) {
         super(props);
-
+        
         this.state = {
-            sessionData: [],
             date: moment(),
             focused: null,
             buttonClick: false
@@ -42,6 +24,7 @@ export default class DateSessions extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.date.format('D M YYYY') !== prevState.date.format('D M YYYY') || this.state.buttonClick) {
             // console.log(this.state.date.format('D M YYYY'));
+            this.props.onDateChange(this.state.date);
             this.setState(() => ({buttonClick: false}));
         }
     }
@@ -74,8 +57,8 @@ export default class DateSessions extends React.Component {
                     onClick={this.onClickHandler}
                 />
                 {
-                    this.state.sessionData.length ?
-                        <SessionsTable sessionData={this.state.sessionData}/> :
+                    this.props.sessionData.length ?
+                        <SessionsTable sessionData={this.props.sessionData}/> :
                         <h1>There is no data!</h1>
                 }
             </div>

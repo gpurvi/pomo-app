@@ -8,88 +8,144 @@ class SessionNameTimerBlock extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            timerDuration: this.props.defaultTimerDuration,
+            timerDuration: 0,
             timerStarted: false,
             timerPaused: false,
             timePassed: 0,
-            sessionName: this.props.defaultSessionName
+            sessionName: ""
         };
 
         this.startPauseClickHandler = this.startPauseClickHandler.bind(this);
         this.onStopHandler = this.onStopHandler.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.onTickHandler = this.onTickHandler.bind(this);
+        this.initStateFromServer = this.initStateFromServer.bind(this);
     }
 
     componentDidMount() {
-        //get all saved state from storage to resume previous state
-        const timerStarted = JSON.parse(localStorage.getItem('timerStarted'));
-        const sessionName = JSON.parse(localStorage.getItem('sessionName'));
-        let timerEnd, timeLeft, timerPaused, timerPausedAt;
-        //lazy load variables
-        if (timerStarted) {
-            timerEnd = JSON.parse(localStorage.getItem('timerEnd'));
-            timeLeft = timerEnd - new Date().valueOf();
-            timerPaused = JSON.parse(localStorage.getItem('timerPaused'));
-            timerPausedAt = JSON.parse(localStorage.getItem('timerPausedAt'));
-        }
+        // if session data and timer state is in localStorage use it otherwise get from server
+        const sessionState = JSON.parse(localStorage.getItem('sessionState'));
+        if (sessionState !== null) {
+            //get all saved state from storage to resume previous state
+            const {
+                timerEndAt,
+                timerStarted,
+                timerPaused,
+                timerPausedAt,
+                timerStartedAt
+            } = sessionState;
 
-        // started and not paused
-        if (timeLeft > 0 && timerStarted && !timerPaused) {
-            this.setState(() => ({
-                timerStarted: true,
-                timerPaused: false,
-                timerDuration: timeLeft
-            }));
+            // init timer from localStorage
+            if (timerStarted) {
+                const timePassed = new Date().valueOf() - timerStartedAt;
+                console.log(timePassed);
+                // started and not paused
+                if (timePassed > 0 && !timerPaused) {
+                    this.setState(() => ({
+                        ...sessionState,
+                        timerStarted: true,
+                        timerPaused: false,
+                        timePassed
+                    }));
+                }
+                // started and paused
+                if (timerPaused) {
+                    this.setState(() => ({
+                        ...sessionState,
+                        timerStarted: true,
+                        timerPaused: true,
+                        timePassed: timerPausedAt - timerStartedAt
+                    }));
+                }
+            } else {
+                // init state from localeStorage if timer is not running
+                this.setState(() => ({...sessionState}));
+            }
+        } else {
+            this.initStateFromServer();
         }
-        // started and paused
-        if (timerStarted && timerPaused) {
-            this.setState(() => ({
-                timerStarted: true,
-                timerPaused: true,
-                timerDuration: timerEnd - timerPausedAt
-            }));
-        }
-        if (sessionName !== null) {
-            this.setState(() => ({
-                sessionName
-            }));
-        }
+    }
+
+    initStateFromServer() {
+        const url = ` http://localhost:3000/sessionState`;
+        fetch(url)
+            .then((res) => res.json())
+            .then((state) => {
+                this.setState(() => ({...state}));
+                // include timePassed because it is only needed for localStorage
+                localStorage.setItem('sessionState', JSON.stringify({...state, timePassed: 0}));
+            })
+            .catch((e) => console.log(e));
     }
 
     startPauseClickHandler() {
         this.setState((prevState) => {
+            const sessionState = JSON.parse(localStorage.getItem('sessionState'));
+
             //start timer
             if (!prevState.timerStarted && !prevState.timerPaused) {
-                const endTime = this.state.timerDuration + new Date().valueOf();
-                localStorage.setItem('timerEnd', JSON.stringify(endTime));
-                localStorage.setItem('timerStarted', JSON.stringify(true));
-                localStorage.setItem('sessionName', JSON.stringify(this.state.sessionName));
+                console.log('start called');
+                const timerStartedAt = new Date().valueOf();
+                const timerEndAt = sessionState.timerDuration + timerStartedAt;
+                const modifiedSessionState = {
+                    ...sessionState,
+                    timerStarted: true,
+                    sessionName: this.state.sessionName,
+                    timerStartedAt,
+                    timerEndAt
+                };
+                localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
                 return {timerStarted: !prevState.timerStarted};
             }
+
             // pause timer
             if (prevState.timerStarted && !prevState.timerPaused) {
-                localStorage.setItem('timerPausedAt', JSON.stringify(new Date().valueOf()));
-                localStorage.setItem('timerPaused', JSON.stringify(true));
+                console.log('pause called');
+                const modifiedSessionState = {
+                    ...sessionState,
+                    timerPausedAt: new Date().valueOf(),
+                    timerPaused: true
+                };
+                localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
                 return {timerPaused: true};
             }
+
             // resume timer
             if (prevState.timerStarted && prevState.timerPaused) {
-                localStorage.setItem('timerPaused', JSON.stringify(false));
+                console.log('resume called');
+                console.log('timesPassed', (sessionState.timerPausedAt - sessionState.timerStartedAt));
+                const timerEndAt = new Date().valueOf() +
+                    sessionState.timerDuration -
+                    (sessionState.timerStartedAt - sessionState.timerPausedAt);
+                const timerStartedAt = new Date().valueOf();
+                const modifiedSessionState = {
+                    ...sessionState,
+                    timerPaused: false,
+                    timerPausedAt: 0,
+                    timerEndAt,
+                    timerStartedAt
+                    // timerEndAt
+                    // timerStartedAt:
+                };
+                localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
                 return {timerPaused: false};
             }
         });
     }
 
     onStopHandler() {
-        this.setState(() => ({
+        this.props.onStop(this.state.sessionName, new Date().valueOf());
+        const sessionState = JSON.parse(localStorage.getItem('sessionState'));
+        const modifiedSessionState = {
+            ...sessionState,
             timerStarted: false,
             timerPaused: false,
-            timerDuration: this.props.defaultTimerDuration,
-            timePassed: 0
-        }));
-        localStorage.setItem('timerStarted', JSON.stringify(false));
-        localStorage.setItem('timerPaused', JSON.stringify(false));
+            timerEndAt: 0,
+            timerStartedAt: 0,
+            timerPausedAt: 0
+        };
+        this.setState(() => ({...modifiedSessionState}));
+        localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
     }
 
     onTickHandler() {
@@ -110,10 +166,9 @@ class SessionNameTimerBlock extends React.Component {
         return (
             <div>
                 <Timer
-                    timerDuration={this.state.timerDuration}
+                    displayTime={this.state.timerDuration - this.state.timePassed}
                     timerStarted={this.state.timerStarted}
                     timerPaused={this.state.timerPaused}
-                    timePassed={this.state.timePassed}
                     onTimerEndHandler={this.onStopHandler}
                     onTick={this.onTickHandler}
                 />
