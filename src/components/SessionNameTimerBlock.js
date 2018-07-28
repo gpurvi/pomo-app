@@ -11,8 +11,9 @@ class SessionNameTimerBlock extends React.Component {
             timerDuration: 0,
             timerStarted: false,
             timerPaused: false,
-            timePassed: 0,
-            sessionName: ""
+            timeLeft: 0,
+            sessionName: "",
+            timerEndAt: 0
         };
 
         this.startPauseClickHandler = this.startPauseClickHandler.bind(this);
@@ -28,24 +29,20 @@ class SessionNameTimerBlock extends React.Component {
         if (sessionState !== null) {
             //get all saved state from storage to resume previous state
             const {
-                timerEndAt,
                 timerStarted,
-                timerPaused,
-                timerPausedAt,
-                timerStartedAt
+                timerPaused
             } = sessionState;
 
             // init timer from localStorage
             if (timerStarted) {
-                const timePassed = new Date().valueOf() - timerStartedAt;
-                console.log(timePassed);
+                const timeLeft = sessionState.timerEndAt - new Date().valueOf();
                 // started and not paused
-                if (timePassed > 0 && !timerPaused) {
+                if (timeLeft > 0 && !timerPaused) {
                     this.setState(() => ({
                         ...sessionState,
                         timerStarted: true,
                         timerPaused: false,
-                        timePassed
+                        timeLeft
                     }));
                 }
                 // started and paused
@@ -54,7 +51,7 @@ class SessionNameTimerBlock extends React.Component {
                         ...sessionState,
                         timerStarted: true,
                         timerPaused: true,
-                        timePassed: timerPausedAt - timerStartedAt
+                        timeLeft: sessionState.timeLeft
                     }));
                 }
             } else {
@@ -72,8 +69,7 @@ class SessionNameTimerBlock extends React.Component {
             .then((res) => res.json())
             .then((state) => {
                 this.setState(() => ({...state}));
-                // include timePassed because it is only needed for localStorage
-                localStorage.setItem('sessionState', JSON.stringify({...state, timePassed: 0}));
+                localStorage.setItem('sessionState', JSON.stringify({...state}));
             })
             .catch((e) => console.log(e));
     }
@@ -84,27 +80,27 @@ class SessionNameTimerBlock extends React.Component {
 
             //start timer
             if (!prevState.timerStarted && !prevState.timerPaused) {
-                console.log('start called');
-                const timerStartedAt = new Date().valueOf();
-                const timerEndAt = sessionState.timerDuration + timerStartedAt;
+                const timerEndAt = this.state.timerDuration + new Date().valueOf();
                 const modifiedSessionState = {
                     ...sessionState,
                     timerStarted: true,
                     sessionName: this.state.sessionName,
-                    timerStartedAt,
                     timerEndAt
                 };
                 localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
-                return {timerStarted: !prevState.timerStarted};
+                return {
+                    timerStarted: !prevState.timerStarted,
+                    timerEndAt,
+                    timeLeft: this.state.timerDuration // to not show 00:00 when start timer
+                };
             }
 
             // pause timer
             if (prevState.timerStarted && !prevState.timerPaused) {
-                console.log('pause called');
                 const modifiedSessionState = {
                     ...sessionState,
-                    timerPausedAt: new Date().valueOf(),
-                    timerPaused: true
+                    timerPaused: true,
+                    timeLeft: this.state.timeLeft
                 };
                 localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
                 return {timerPaused: true};
@@ -112,23 +108,14 @@ class SessionNameTimerBlock extends React.Component {
 
             // resume timer
             if (prevState.timerStarted && prevState.timerPaused) {
-                console.log('resume called');
-                console.log('timesPassed', (sessionState.timerPausedAt - sessionState.timerStartedAt));
-                const timerEndAt = new Date().valueOf() +
-                    sessionState.timerDuration -
-                    (sessionState.timerStartedAt - sessionState.timerPausedAt);
-                const timerStartedAt = new Date().valueOf();
+                const timerEndAt = new Date().valueOf() + this.state.timeLeft;
                 const modifiedSessionState = {
                     ...sessionState,
                     timerPaused: false,
-                    timerPausedAt: 0,
-                    timerEndAt,
-                    timerStartedAt
-                    // timerEndAt
-                    // timerStartedAt:
+                    timerEndAt
                 };
                 localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
-                return {timerPaused: false};
+                return {timerPaused: false, timerEndAt};
             }
         });
     }
@@ -141,16 +128,17 @@ class SessionNameTimerBlock extends React.Component {
             timerStarted: false,
             timerPaused: false,
             timerEndAt: 0,
-            timerStartedAt: 0,
-            timerPausedAt: 0
+            timeLeft: 0
         };
         this.setState(() => ({...modifiedSessionState}));
         localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
     }
 
     onTickHandler() {
+        console.log(this.state.timeLeft);
         this.setState((prevState) => ({
-            timePassed: prevState.timePassed + 1000
+            // timeLeft: this.state.timerEndAt - new Date().valueOf()
+            timeLeft: prevState.timeLeft - 1000
         }));
     }
 
@@ -163,10 +151,12 @@ class SessionNameTimerBlock extends React.Component {
 
     render() {
         const timerRunning = (this.state.timerStarted && !this.state.timerPaused);
+        const displayTime = this.state.timerStarted ?
+            this.state.timeLeft : this.state.timerDuration;
         return (
             <div>
                 <Timer
-                    displayTime={this.state.timerDuration - this.state.timePassed}
+                    displayTime={displayTime}
                     timerStarted={this.state.timerStarted}
                     timerPaused={this.state.timerPaused}
                     onTimerEndHandler={this.onStopHandler}
