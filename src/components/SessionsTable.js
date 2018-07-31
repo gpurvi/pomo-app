@@ -22,6 +22,27 @@ const SessionsTable = (props) => {
         return `${count} / ${displayTime(time)}`;
     };
 
+    const reduceSessionData = (sessions) => {
+        return sessions.reduce(function (ar, item) {
+            let {sessionName, duration} = item;
+            const _item = ar.filter(function (a) {
+                return a.sessionName === sessionName
+            })[0];
+            const indexOf = ar.indexOf(_item);
+
+            if (indexOf > -1) {
+                ar[indexOf] = {
+                    sessionName,
+                    count: _item.count + 1,
+                    duration: _item.duration + duration
+                };
+            } else {
+                ar.push({sessionName, count: 1, duration});
+            }
+            return ar;
+        }, []);
+    };
+
     return (
         <table className="SessionsTable">
             <thead>
@@ -31,14 +52,14 @@ const SessionsTable = (props) => {
             </tr>
             </thead>
             <tbody>
-            {props.sessionData.map((session) => {
-                totalMillis += session.timeInMillis;
+            {reduceSessionData(props.sessionData).map((session, index) => {
+                totalMillis += session.duration;
                 sessionTotalCount += session.count;
                 return (
                     <DataRow
-                        key={session.sessionName}
+                        key={index}
                         firstCol={session.sessionName}
-                        secondCol={displayCountTime(session.count, session.timeInMillis)}
+                        secondCol={displayCountTime(session.count, session.duration)}
                     />
                 );
             })}

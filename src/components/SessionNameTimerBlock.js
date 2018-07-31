@@ -143,8 +143,14 @@ class SessionNameTimerBlock extends React.Component {
         });
     }
 
-    onStopHandler() {
-        this.props.onStop(this.state.sessionName, new Date().valueOf());
+    onStopHandler(e) {
+        // if it was pressed so e exists and time passed calculate
+        if (e) {
+            this.props.onStop(this.state.sessionName,
+                this.state.timerDuration - this.state.timeLeft);
+        } else {
+            this.props.onStop(this.state.sessionName, this.state.timerDuration);
+        }
         const sessionState = JSON.parse(localStorage.getItem('sessionState'));
         const modifiedSessionState = {
             ...sessionState,

@@ -17,21 +17,21 @@ const data = [
 // });
 
 test('should set new date', () => {
-    const wrapper = shallow(<DateSessions/>);
+    const wrapper = shallow(<DateSessions sessionData={data}/>);
     const now = moment();
     wrapper.instance().onDateChangeHandler(now);
     expect(wrapper.state('date')).toBe(now);
 });
 
 test('should set new date', () => {
-    const wrapper = shallow(<DateSessions/>);
+    const wrapper = shallow(<DateSessions sessionData={data}/>);
     const now = moment();
     wrapper.instance().onDateChangeHandler(now);
     expect(wrapper.state('date')).toBe(now);
 });
 
 describe('onClickHandler should', () => {
-    const wrapper = shallow(<DateSessions/>);
+    const wrapper = shallow(<DateSessions sessionData={data}/>);
 
     test('set state if action = prev', () => {
         wrapper.instance().onClickHandler('prev');
@@ -52,7 +52,11 @@ describe('onClickHandler should', () => {
 });
 
 describe('componentDidUpdate should', () => {
-    const wrapper = shallow(<DateSessions/>);
+    const onDateChange = jest.fn();
+    const wrapper = shallow(<DateSessions
+        sessionData={data}
+        onDateChange={onDateChange}
+    />);
 
     test('set state if prevState.date === state.date', () => {
         wrapper.setState({buttonClick: true});
@@ -60,10 +64,10 @@ describe('componentDidUpdate should', () => {
         expect(wrapper.state('buttonClick')).toBe(false);
     });
 
-    // test('set state if action = next', () => {
-    //     wrapper.instance().onClickHandler('next');
-    //     expect(wrapper.state('buttonClick')).toBe(true);
-    // });
+    test('set state if action = next', () => {
+        wrapper.instance().onClickHandler('next');
+        expect(wrapper.state('buttonClick')).toBe(true);
+    });
 
     //cannot perform this test because of moment quirks
     // test('set state if action = now', () => {

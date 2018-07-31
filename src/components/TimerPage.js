@@ -20,19 +20,23 @@ export default class TimerPage extends React.Component {
         this.getSessions(moment().format('YYYY-MM-DD'));
     }
 
-    onStopHandler(sessionName, stopTime) {
-        this.postSession(sessionName, moment(stopTime).format('YYYY-MM-DD'))
+    onStopHandler(sessionName, duration) {
+        this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration)
             .then(() => {
-                this.getSessions(moment(stopTime).format('YYYY-MM-DD'));
+                //TODO currently i need timeOut because when stoped by timer it doesn't fetch
+                setTimeout(() => {
+                    this.getSessions(moment().format('YYYY-MM-DD'));
+                }, 500);
+
             })
             .catch((e) => console.log(e));
     }
 
-    postSession(sessionName, stopTime) {
+    postSession(sessionName, date, duration) {
         const url = ` http://localhost:3000/sessions`;
         const init = {
             method: "POST",
-            body: JSON.stringify({sessionName, stopTime}),
+            body: JSON.stringify({sessionName, date, duration}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -41,7 +45,7 @@ export default class TimerPage extends React.Component {
     }
 
     getSessions(date) {
-        const url = ` http://localhost:3000/sessions?stopTime=${date}`;
+        const url = ` http://localhost:3000/sessions?date=${date}`;
         fetch(url)
             .then((res) => res.json())
             .then((sessions) => this.setState(() => ({sessions})))
@@ -60,7 +64,7 @@ export default class TimerPage extends React.Component {
                     onStop={this.onStopHandler}
                 />
                 <DateSessions
-                    sessionData={[]}
+                    sessionData={this.state.sessions}
                     onDateChange={this.onDateChangeHandler}/>
             </div>
         );

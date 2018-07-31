@@ -23,7 +23,6 @@ export default class DateSessions extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.date.format('D M YYYY') !== prevState.date.format('D M YYYY') || this.state.buttonClick) {
-            // console.log(this.state.date.format('D M YYYY'));
             this.props.onDateChange(this.state.date);
             this.setState(() => ({buttonClick: false}));
         }

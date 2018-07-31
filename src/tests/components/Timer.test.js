@@ -3,7 +3,7 @@ import {shallow} from 'enzyme';
 import Timer from '../../components/Timer';
 
 test('renders Timer correctly', () => {
-    const wrapper = shallow(<Timer timerDuration={5000}/>);
+    const wrapper = shallow(<Timer displayTime={5000}/>);
     expect(wrapper).toMatchSnapshot();
 });
 
@@ -40,12 +40,12 @@ describe('when timer ends calls methods', () => {
     const onTimerEndHandler = jest.fn();
     const wrapper = shallow(<Timer
         onTimerEndHandler={onTimerEndHandler}
-        timerDuration={5000}
+        displayTime={5000}
         timerStarted={true}
         timerPaused={false}/>);
     const playSound = jest.spyOn(Timer.prototype, 'playSound');
 
-    wrapper.setProps({timePassed: 5500});
+    wrapper.setProps({displayTime: -100});
 
     test('calls playSound method', () => {
         expect(playSound).toHaveBeenCalled();
