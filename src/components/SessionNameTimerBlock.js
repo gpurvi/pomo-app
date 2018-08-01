@@ -9,6 +9,8 @@ class SessionNameTimerBlock extends React.Component {
         super(props);
         this.state = {
             timerDuration: 0,
+            breakDuration: 0,
+            breakTimerStarted: false,
             timerStarted: false,
             timerPaused: false,
             timeLeft: 0,
@@ -20,7 +22,6 @@ class SessionNameTimerBlock extends React.Component {
         this.onStopHandler = this.onStopHandler.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.onTickHandler = this.onTickHandler.bind(this);
-        this.initStateFromServer = this.initStateFromServer.bind(this);
     }
 
     componentDidMount() {
@@ -30,7 +31,8 @@ class SessionNameTimerBlock extends React.Component {
             //get all saved state from storage to resume previous state
             const {
                 timerStarted,
-                timerPaused
+                timerPaused,
+                breakTimerStarted,
             } = sessionState;
 
             // init timer from localStorage
@@ -54,21 +56,24 @@ class SessionNameTimerBlock extends React.Component {
                         timeLeft: sessionState.timeLeft
                     }));
                 }
+            } else if (breakTimerStarted) {
+                // if break timer is started
+                const timeLeft = sessionState.timerEndAt - new Date().valueOf();
+                // started and not paused
+                if (timeLeft > 0) {
+                    this.setState(() => ({
+                        ...sessionState,
+                        breakTimerStarted: true,
+                        timeLeft
+                    }));
+                }
             } else {
-                // init state from localeStorage if timer is not running
+                // init state from localeStorage if timer  is not running
                 this.setState(() => ({...sessionState}));
             }
         } else {
-            this.initStateFromServer();
-        }
-    }
-
-    initStateFromServer() {
-        const url = ` http://localhost:3000/sessionState`;
-        fetch(url)
-            .then((res) => res.json())
-            .then((state) => {
-                if (state.timerStarted === true && state.timerPaused !== true) {
+            this.props.initStateFromServer().then((state) => {
+                if (state.timerStarted === true && state.timerPaused !== true || state.breakTimerStarted) {
                     this.setState(() => ({
                         ...state,
                         timeLeft: state.timerEndAt - new Date().valueOf()
@@ -77,21 +82,8 @@ class SessionNameTimerBlock extends React.Component {
                     this.setState(() => ({...state}));
                 }
                 localStorage.setItem('sessionState', JSON.stringify({...state}));
-            })
-            .catch((e) => console.log(e));
-    }
-
-    changeTimerStateOnServer(modifiedSessionState) {
-        const url = ` http://localhost:3000/sessionState`;
-        const init = {
-            method: "PUT",
-            body: JSON.stringify(modifiedSessionState),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        fetch(url, init)
-            .catch((e) => console.log(e));
+            });
+        }
     }
 
     startPauseClickHandler() {
@@ -107,7 +99,7 @@ class SessionNameTimerBlock extends React.Component {
                     sessionName: this.state.sessionName,
                     timerEndAt
                 };
-                this.changeTimerStateOnServer(modifiedSessionState);
+                this.props.changeTimerStateOnServer('simple', modifiedSessionState);
                 localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
                 return {
                     timerStarted: !prevState.timerStarted,
@@ -123,7 +115,7 @@ class SessionNameTimerBlock extends React.Component {
                     timerPaused: true,
                     timeLeft: this.state.timeLeft
                 };
-                this.changeTimerStateOnServer(modifiedSessionState);
+                this.props.changeTimerStateOnServer('simple', modifiedSessionState);
                 localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
                 return {timerPaused: true};
             }
@@ -136,7 +128,7 @@ class SessionNameTimerBlock extends React.Component {
                     timerPaused: false,
                     timerEndAt
                 };
-                this.changeTimerStateOnServer(modifiedSessionState);
+                this.props.changeTimerStateOnServer('simple', modifiedSessionState);
                 localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
                 return {timerPaused: false, timerEndAt};
             }
@@ -144,22 +136,54 @@ class SessionNameTimerBlock extends React.Component {
     }
 
     onStopHandler(e) {
-        // if it was pressed so e exists and time passed calculate
-        if (e) {
-            this.props.onStop(this.state.sessionName,
-                this.state.timerDuration - this.state.timeLeft);
-        } else {
-            this.props.onStop(this.state.sessionName, this.state.timerDuration);
-        }
         const sessionState = JSON.parse(localStorage.getItem('sessionState'));
-        const modifiedSessionState = {
-            ...sessionState,
-            timerStarted: false,
-            timerPaused: false,
-            timerEndAt: 0,
-            timeLeft: 0
-        };
-        this.changeTimerStateOnServer(modifiedSessionState);
+        let modifiedSessionState;
+        // if it was pressed so e exists and time passed calculate and stop timer without break
+        if (e) {
+            modifiedSessionState = {
+                ...sessionState,
+                breakTimerStarted: false,
+                timerStarted: false,
+                timerPaused: false,
+                timerEndAt: 0,
+                timeLeft: 0
+            };
+            // if was stopped session timer
+            if (this.state.timerStarted) {
+                this.props.changeTimerStateOnServer('session',
+                    modifiedSessionState,
+                    this.state.sessionName,
+                    this.state.timerDuration - this.state.timeLeft);
+            } else if (this.state.breakTimerStarted) {
+                this.props.changeTimerStateOnServer('break', modifiedSessionState);
+            }
+        } else {
+            // after session timer start break timer
+            if (this.state.breakTimerStarted === false) {
+                const timerEndAt = this.state.breakDuration + new Date().valueOf();
+                modifiedSessionState = {
+                    ...sessionState,
+                    breakTimerStarted: true,
+                    timerStarted: false,
+                    timerPaused: false,
+                    timeLeft: this.state.breakDuration,
+                    timerEndAt
+                };
+                this.props.changeTimerStateOnServer('session',
+                    modifiedSessionState, this.state.sessionName,
+                    this.state.timerDuration);
+            } else {
+                // end break timer
+                modifiedSessionState = {
+                    ...sessionState,
+                    breakTimerStarted: false,
+                    timerEndAt: 0,
+                    timeLeft: 0
+                };
+                this.props.changeTimerStateOnServer('break', modifiedSessionState);
+            }
+        }
+        // this.changeTimerStateOnServer(modifiedSessionState);
         this.setState(() => ({...modifiedSessionState}));
         localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
     }
@@ -180,12 +204,13 @@ class SessionNameTimerBlock extends React.Component {
 
     render() {
         const timerRunning = (this.state.timerStarted && !this.state.timerPaused);
-        const displayTime = this.state.timerStarted ?
+        const displayTime = (this.state.timerStarted || this.state.breakTimerStarted) ?
             this.state.timeLeft : this.state.timerDuration;
         return (
             <div>
                 <Timer
                     displayTime={displayTime}
+                    breakTimerStarted={this.state.breakTimerStarted}
                     timerStarted={this.state.timerStarted}
                     timerPaused={this.state.timerPaused}
                     onTimerEndHandler={this.onStopHandler}
@@ -202,7 +227,7 @@ class SessionNameTimerBlock extends React.Component {
                     />
                     <StopButton
                         onStopHandler={this.onStopHandler}
-                        timerStarted={this.state.timerStarted}
+                        timerStarted={this.state.timerStarted || this.state.breakTimerStarted}
                     />
                 </div>
             </div>

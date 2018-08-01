@@ -136,6 +136,12 @@ export default class Timer extends Component {
             && this.props.timerStarted) {
             this.startCountdown();
         }
+        //starts break timer
+        if ((prevProps.breakTimerStarted !== this.props.breakTimerStarted) && this.props.breakTimerStarted) {
+            this.startCountdown();
+        } else if ((prevProps.breakTimerStarted !== this.props.breakTimerStarted) && !this.props.breakTimerStarted) {
+            clearInterval(this.timerState.__timerId);
+        }
     };
 
     startCountdown() {

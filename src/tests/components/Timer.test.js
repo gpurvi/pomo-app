@@ -35,6 +35,20 @@ test('resumes timer', () => {
     expect(startCountdown).toHaveBeenCalled();
 });
 
+test('starts break timer', () => {
+    const startCountdown = jest.spyOn(Timer.prototype, 'startCountdown');
+    const wrapper = shallow(<Timer breakTimerStarted={false}/>);
+    wrapper.setProps({breakTimerStarted: true});
+    expect(startCountdown).toHaveBeenCalled();
+});
+
+test('stops break timer', () => {
+    jest.useFakeTimers();
+    const wrapper = shallow(<Timer breakTimerStarted={true}/>);
+    wrapper.setProps({timerStarted: false});
+    expect(clearInterval).toHaveBeenCalled();
+});
+
 describe('when timer ends calls methods', () => {
     jest.useFakeTimers();
     const onTimerEndHandler = jest.fn();
