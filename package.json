@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "chart.js": "^2.7.2",
     "howler": "^2.0.12",
     "moment": "^2.22.2",
     "react": "^16.4.0",
+    "react-date-picker": "^6.11.3",
     "react-dates": "^17.1.0",
     "react-dom": "^16.4.0",
     "react-redux": "^5.0.7",

@@ -9,7 +9,6 @@ export default class TimerPage extends React.Component {
         super(props);
 
         this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
-        this.onStopHandler = this.onStopHandler.bind(this);
         this.changeTimerStateOnServer = this.changeTimerStateOnServer.bind(this);
         this.getSessions = this.getSessions.bind(this);
         this.state = {
@@ -21,30 +20,8 @@ export default class TimerPage extends React.Component {
         this.getSessions(moment().format('YYYY-MM-DD'));
     }
 
-    onStopHandler(timerMode, sessionName = '', duration = 0) {
-        if (timerMode === 'session') {
-            this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration)
-                .then(() => {
-                    //TODO currently i need timeOut because when stoped by timer it doesn't fetch
-                    setTimeout(() => {
-                        this.getSessions(moment().format('YYYY-MM-DD'));
-                    }, 500);
-                })
-                .catch((e) => console.log(e));
-        } else if (timerMode === ' break') {
-            this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration)
-                .then(() => {
-                    //TODO currently i need timeOut because when stoped by timer it doesn't fetch
-                    setTimeout(() => {
-                        this.getSessions(moment().format('YYYY-MM-DD'));
-                    }, 500);
-                })
-                .catch((e) => console.log(e));
-        }
-    }
-
     initStateFromServer() {
-        const url = ` http://localhost:3000/sessionState`;
+        const url = `http://localhost:3000/sessionState`;
         return fetch(url)
             .then((res) => res.json())
             .catch((e) => console.log(e));
@@ -57,13 +34,11 @@ export default class TimerPage extends React.Component {
         } else if (mode === 'session') {
             this.putSessionState(modifiedSessionState)
                 .then(() => {
-                    this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration)
+                    return this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration)
                 })
-                .then(() => {
-                    //need to set timeout because it doesn't get sessions otherwise
-                    setTimeout(() => this.getSessions(moment().format('YYYY-MM-DD')),
-                        500);
-
+                .then((res) => res.json())
+                .then((session) => {
+                    this.setState((prevState) => ({sessions: prevState.sessions.concat(session)}));
                 })
                 .catch((e) => console.log(e));
         } else if (mode === 'break') {
@@ -73,7 +48,7 @@ export default class TimerPage extends React.Component {
     }
 
     putSessionState(modifiedSessionState) {
-        const url = ` http://localhost:3000/sessionState`;
+        const url = 'http://localhost:3000/sessionState';
         const init = {
             method: "PUT",
             body: JSON.stringify(modifiedSessionState),
@@ -81,14 +56,16 @@ export default class TimerPage extends React.Component {
                 'Content-Type': 'application/json'
             }
         };
-        return fetch(url, init)
+        return fetch(url, init);
+        // return fetch(url, init).then((res) => res.text())
+        //     .then((status) => document.querySelector("#root").innerHTML=status);
     }
 
     postSession(sessionName, date, duration) {
-        const url = ` http://localhost:3000/sessions`;
+        const url = 'http://localhost:3000/sessions';
         const init = {
             method: "POST",
-            body: JSON.stringify({sessionName, date, duration}),
+            body: JSON.stringify({sessionName, duration}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -97,7 +74,7 @@ export default class TimerPage extends React.Component {
     }
 
     getSessions(date) {
-        const url = ` http://localhost:3000/sessions?date=${date}`;
+        const url = `http://localhost:3000/sessions?date=${date}`;
         fetch(url)
             .then((res) => res.json())
             .then((sessions) => this.setState(() => ({sessions})))

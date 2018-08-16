@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import TimerPage from './components/TimerPage';
+// import TimerPage from './components/TimerPage';
+import ChartPage from "./components/ChartPage";
+
 
 // import SessionNameTimerBlock from "./components/SessionNameTimerBlock";
 
@@ -23,4 +25,4 @@ import TimerPage from './components/TimerPage';
 //     defaultTimerDuration={5000}/>
 
 
-ReactDOM.render(<TimerPage/> , document.getElementById('root'));
+ReactDOM.render(<ChartPage/>, document.getElementById('root'));

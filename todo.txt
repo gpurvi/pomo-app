@@ -1,1 +1,2 @@
 * Must implement cases when user wants to use different timer durations.
+* On TimerPage in sessions table implement delete button for session

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './MainPage.css';
 import Timer from './Timer';
-import LabelsManager from "../playground/LabelsManager";
+// import LabelsManager from "../playground/LabelsManager";
 
 
 class MainPage extends Component {

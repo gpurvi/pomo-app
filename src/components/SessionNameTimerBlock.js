@@ -73,7 +73,7 @@ class SessionNameTimerBlock extends React.Component {
             }
         } else {
             this.props.initStateFromServer().then((state) => {
-                if (state.timerStarted === true && state.timerPaused !== true || state.breakTimerStarted) {
+                if ((state.timerStarted === true && state.timerPaused !== true) || state.breakTimerStarted) {
                     this.setState(() => ({
                         ...state,
                         timeLeft: state.timerEndAt - new Date().valueOf()
@@ -189,7 +189,7 @@ class SessionNameTimerBlock extends React.Component {
     }
 
     onTickHandler() {
-        console.log(this.state.timeLeft);
+        console.log("timer");
         this.setState((prevState) => ({
             timeLeft: prevState.timeLeft - 1000
         }));
