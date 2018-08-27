@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import Timer from '../../components/Timer';
+import Timer from '../../components/TimerPage/Timer';
 
 test('renders Timer correctly', () => {
     const wrapper = shallow(<Timer displayTime={5000}/>);

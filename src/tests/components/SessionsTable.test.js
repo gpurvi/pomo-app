@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import SessionsTable from '../../components/SessionsTable';
+import SessionsTable from '../../components/TimerPage/SessionsTable';
 import SessionData from './mock_data/sessions';
 
 test('renders SessionsTable correctly', () => {

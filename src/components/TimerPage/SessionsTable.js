@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import DataRow from "./DataRow";
-import '../styles/components/SessionsTable.css';
+import '../../styles/components/SessionsTable.css';
 
 const SessionsTable = (props) => {
     let totalMillis = 0, sessionTotalCount = 0;

@@ -1,12 +1,24 @@
 import React from 'react';
 // import moment from 'moment';
-import Chart from 'chart.js';
+import Chart from '../../../node_modules/chart.js/src/chart';
 
-export default class BarChart extends React.Component {
+export default class BarChart1 extends React.Component {
     constructor(props) {
         super(props);
         this.canvasRef = React.createRef();
         this.chart = null;
+
+        this.datasets = [{
+            label: `sessions per month`,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+        }, {
+            label: `hours per month`,
+            borderWidth: 2,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgb(255, 99, 132, 1)'
+        }];
     }
 
 
@@ -50,25 +62,9 @@ export default class BarChart extends React.Component {
             type: 'bar',
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: [{
-                    label: `${label}sessions per month`,
-                    data: this.props.sessions,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 2,
-                }, {
-                    label: `${label}hours per month`,
-                    data: this.props.duration,
-                    borderWidth: 2,
-                    borderColor: 'rgb(255, 99, 132)',
-                }
-                ]
+                datasets: []
             },
             options: {
-                title: {
-                    display: true,
-                    text: this.props.title
-                },
                 scales: {
                     yAxes: [{
                         ticks: {

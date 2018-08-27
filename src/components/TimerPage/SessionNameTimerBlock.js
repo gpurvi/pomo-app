@@ -1,8 +1,8 @@
 import React from 'react';
 import Timer from "./Timer";
 import {SessionName} from "./SessionName";
-import StartPauseButton from "./StartPauseButton";
-import StopButton from "./StopButton";
+import StartPauseButton from "../buttons/StartPauseButton";
+import StopButton from "../buttons/StopButton";
 
 class SessionNameTimerBlock extends React.Component {
     constructor(props) {
@@ -189,7 +189,6 @@ class SessionNameTimerBlock extends React.Component {
     }
 
     onTickHandler() {
-        console.log("timer");
         this.setState((prevState) => ({
             timeLeft: prevState.timeLeft - 1000
         }));

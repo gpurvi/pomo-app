@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import StopButton from '../../components/StopButton';
+import StopButton from '../../components/buttons/StopButton';
 
 test('renders StopButton with grey stop image', () => {
     const wrapper = shallow(<StopButton/>);

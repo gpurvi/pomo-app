@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import Chart from 'chart.js';
+import Chart from '../../../node_modules/chart.js/src/chart';
 
 export default class LineChart extends React.Component {
     constructor(props) {
@@ -124,10 +124,10 @@ export default class LineChart extends React.Component {
                 //     //     // ci.update();
                 //     // }
                 // },
-                title: {
-                    display: true,
-                    text: this.props.title
-                },
+                // title: {
+                //     display: true,
+                //     text: this.props.title
+                // },
                 scales: {
                     yAxes: [{
                         ticks: {

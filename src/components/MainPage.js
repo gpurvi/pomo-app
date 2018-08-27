@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './MainPage.css';
-import Timer from './Timer';
+import Timer from './TimerPage/Timer';
 // import LabelsManager from "../playground/LabelsManager";
 
 

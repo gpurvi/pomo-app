@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import StartPauseButton from '../../components/StartPauseButton';
+import StartPauseButton from '../../components/buttons/StartPauseButton';
 
 test('renders StartPauseButton with play image', () => {
     const wrapper = shallow(<StartPauseButton timerRunning={false}/>);

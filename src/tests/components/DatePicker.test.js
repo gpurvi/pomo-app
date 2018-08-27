@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import moment from 'moment';
-import DatePicker from '../../components/DatePicker';
+import DatePicker from '../../components/TimerPage/DatePicker';
 
 test('renders DatePicker correctly', () => {
     const wrapper = shallow(<DatePicker date={moment()}/>);

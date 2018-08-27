@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import SimpleButton from '../../components/SimpleButton';
+import SimpleButton from '../../components/buttons/SimpleButton';
 
 test('renders SimpleButton with text', () => {
     const wrapper = shallow(<SimpleButton text="text"/>);

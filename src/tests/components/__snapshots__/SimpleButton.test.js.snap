@@ -21,6 +21,7 @@ ShallowWrapper {
     "props": Object {
       "children": "text",
       "data-attr": undefined,
+      "disabled": undefined,
       "onClick": undefined,
     },
     "ref": null,
@@ -35,6 +36,7 @@ ShallowWrapper {
       "props": Object {
         "children": "text",
         "data-attr": undefined,
+        "disabled": undefined,
         "onClick": undefined,
       },
       "ref": null,

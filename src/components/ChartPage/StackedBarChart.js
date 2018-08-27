@@ -1,6 +1,6 @@
 import React from 'react';
 // import moment from 'moment';
-import Chart from 'chart.js';
+import Chart from '../../../node_modules/chart.js/src/chart';
 
 export default class StackedBarChart extends React.Component {
     constructor(props) {
