@@ -1,7 +1,7 @@
 import React from 'react';
 import ChartInter from "./ChartInter";
 import moment from "moment";
-
+import {getSessionsDurations} from "../apiCalls";
 
 export default class ChartBlock extends React.Component {
     constructor(props) {
@@ -11,37 +11,42 @@ export default class ChartBlock extends React.Component {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             sessions: [],
             durations: [],
-            maxDate: new Date(),
-            minDate: moment().subtract(10, 'month').toDate(),
-            date: moment().toDate(), // toDate because of datepicker
+            maxDate: moment().toDate(),
+            date: moment()/*subtract(2, 'months')*/.toDate(), // toDate because of datepicker
             fetchedDate: null, //state which changes when data is fetched, need for chart to show right data
             nextDisabled: false,
-            prevDisabled: false
+            prevDisabled: false,
+            error: ''
         };
 
+        this.line = this.props.type === 'line';
+
         this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
-        this.fetchData = this.fetchData.bind(this);
+        // this.fetchData = this.fetchData.bind(this);
         this.onDateChangeClickHandler = this.onDateChangeClickHandler.bind(this);
         this.buttonDisabler = this.buttonDisabler.bind(this);
+        this.getSessionData = this.getSessionData.bind(this);
+        this.fetchedDataEmpty = this.fetchedDataEmpty.bind(this);
     }
 
 
-    componentDidMount() {
-        this.fetchData();
+    async componentDidMount() {
+        // this.fetchData();
+        await this.getSessionData();
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    async componentDidUpdate(prevProps, prevState) {
         const prevDate = moment(prevState.date);
         const nowDate = moment(this.state.date);
-        const type = this.props.type;
         // console.log(prevDate, nowDate);
         // after date is updated fetch new data
         // isValid because it is possible to get invalid date from DatePicker
         if (nowDate.isValid()) {
             if (!prevDate.isSame(nowDate)) {
-                this.fetchData();
+                // this.fetchData();
+                await this.getSessionData();
             }
-            this.buttonDisabler(nowDate, prevDate, type);
+            this.buttonDisabler(nowDate, prevDate);
         } else if (!nowDate.isValid()) {
             if (!this.state.nextDisabled || !this.state.prevDisabled) {
                 this.setState(() => ({
@@ -53,8 +58,8 @@ export default class ChartBlock extends React.Component {
     }
 
 
-    buttonDisabler(nowDate, prevDate, type) {
-        const isSameEquality = type === 'line' ? 'month' : 'year';
+    buttonDisabler(nowDate, prevDate) {
+        const isSameEquality = this.line ? 'month' : 'year';
         let prevDisabledState, nextDisabledState;
         if (!prevDate.isValid()) {
             prevDisabledState = this.state.prevDisabled;
@@ -63,7 +68,7 @@ export default class ChartBlock extends React.Component {
             prevDisabledState = !this.state.prevDisabled;
             nextDisabledState = !this.state.nextDisabled;
         }
-        if (nowDate.isSame(moment(this.state.minDate), isSameEquality) && prevDisabledState) {
+        if (nowDate.isSame(moment(this.props.minDate), isSameEquality) && prevDisabledState) {
             this.setState(() => ({
                 prevDisabled: true,
                 nextDisabled: false
@@ -73,7 +78,7 @@ export default class ChartBlock extends React.Component {
                 prevDisabled: false,
                 nextDisabled: true
             }));
-        } else if (!nowDate.isSame(moment(this.state.minDate), isSameEquality) &&
+        } else if (!nowDate.isSame(moment(this.props.minDate), isSameEquality) &&
             !nowDate.isSame(moment(this.state.maxDate), isSameEquality) &&
             (this.state.prevDisabled || this.state.nextDisabled)) {
             this.setState(() => ({
@@ -83,52 +88,37 @@ export default class ChartBlock extends React.Component {
         }
     }
 
-    getDummyData(date, type) {
-        let sessionDurations = [];
-        if (type === 'line') {
-            const daysInMonth = date.daysInMonth();
-            for (let i = 1; i <= daysInMonth; i++) {
-                if (i % 2 === 0) {
-                    const rand = Math.floor((Math.random() * 30) + 10);
-                    sessionDurations.push({
-                        date: i,
-                        sessions: rand,
-                        durations: rand / 5
-                    });
-                }
-            }
-        } else if (type === 'bar') {
-            const yearLength = 12;
-            for (let i = 1; i <= yearLength; i++) {
-                const rand = Math.floor((Math.random() * 150) + 10);
-                sessionDurations.push({
-                    date: i,
-                    sessions: rand,
-                    durations: rand / 5
-                });
-            }
+    async getSessionData() {
+        const formatDate = this.line ? moment(this.state.date).format('YYYY-MM') :
+            moment(this.state.date).format('YYYY');
+        const fetchedDate = moment(this.state.date);
+        const length = this.line ? 'month' : 'year';
+        try {
+            const sessionData = await getSessionsDurations(formatDate, length);
+            // console.log(sessionData);
+            this.setState(() => ({
+                ...this.normalizeData(sessionData, fetchedDate),
+                fetchedDate
+            }));
+        } catch (err) {
+            this.setState(() => ({
+                error: err.message
+            }));
         }
-        return sessionDurations;
-    }
-
-    fetchData() {
-        const date = moment(this.state.date);
-        const sessionDurations = this.getDummyData(date, this.props.type);
-        this.setState(() => ({
-            ...this.normalizeData(sessionDurations, date),
-            fetchedDate: date
-        }));
-
     }
 
     normalizeData(data, date) {
+        // console.log(data);
         let o = {sessions: [], durations: []};
-        if (this.props.type === 'line') {
+        if (data.length === 0) {
+            return this.fetchedDataEmpty(o);
+        }
+        if (this.line && data.length !== 0) {
             o.labels = [];
             const daysInMonth = date.daysInMonth();
             for (let i = 1; i <= daysInMonth; i++) {
                 o.labels.push(i);
-                const _item = data.find((item) => item.date === i);
+                const _item = data[0].data.find((item) => item.date === i);
                 if (_item !== undefined) {
                     let {sessions, durations} = _item;
                     o.sessions.push(sessions);
@@ -138,9 +128,9 @@ export default class ChartBlock extends React.Component {
                     o.durations.push(0);
                 }
             }
-        } else if (this.props.type === 'bar') {
+        } else if (!this.line) {
             for (let i = 1; i <= 12; i++) {
-                const _item = data.find((item) => item.date === i);
+                const _item = data[0].data.find((item) => item.date === i);
                 if (_item !== undefined) {
                     let {sessions, durations} = _item;
                     o.sessions.push(sessions);
@@ -154,13 +144,34 @@ export default class ChartBlock extends React.Component {
         return o;
     }
 
+    fetchedDataEmpty(o){
+        if (this.line) {
+            return {
+                ...o,
+                labels: (()=>{
+                    let ar = [];
+                    const daysInMonth = moment(this.state.date).daysInMonth();
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        ar.push(i);
+                    }
+                    return ar;
+                })()
+            }
+        } else {
+            return {
+                ...o,
+                labels: this.state.labels
+            }
+        }
+    }
+
     onDateChangeHandler(date) {
         this.setState(() => ({date}));
     }
 
     onDateChangeClickHandler(e) {
         const action = e.target.dataset.attr;
-        const lengthDate = this.props.type === 'line' ? 'month' : 'year';
+        const lengthDate = this.line ? 'month' : 'year';
         if (action === 'prev') {
             this.setState((prevState) => ({
                 date: moment(prevState.date).subtract(1, lengthDate).toDate()
@@ -183,7 +194,7 @@ export default class ChartBlock extends React.Component {
                 durations={this.state.durations}
                 sessionsLabel={this.props.sessionsLabel}
                 durationsLabel={this.props.durationsLabel}
-                minDate={this.state.minDate}
+                minDate={this.props.minDate}
                 maxDate={this.state.maxDate}
                 labels={this.state.labels}
                 nextDisabled={this.state.nextDisabled}

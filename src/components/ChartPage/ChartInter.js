@@ -66,8 +66,7 @@ export default class ChartInter extends React.Component {
                     onDateChangeClick={this.props.onDateChangeClick}
                 />
             </div>
-        )
-            ;
+        );
     }
 
 }

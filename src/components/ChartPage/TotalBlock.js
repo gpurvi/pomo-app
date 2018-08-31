@@ -1,5 +1,6 @@
 import React from 'react';
 import TotalTable from "./TotalTable";
+import {getTotal} from "../apiCalls";
 
 export default class TotalBlock extends React.Component {
     constructor(props) {
@@ -8,22 +9,18 @@ export default class TotalBlock extends React.Component {
             totalSessions: 0,
             totalHours: 0,
             averageSessions: 0,
-            averageHours: 0
+            averageHours: 0,
+            error: ''
         };
-        this.fetchData = this.fetchData.bind(this);
     }
 
-    componentDidMount() {
-        this.fetchData();
-    }
-
-    fetchData() {
-        this.setState(() => ({
-            totalSessions: 1522,
-            totalHours: 456,
-            averageSessions: 79,
-            averageHours: 12
-        }));
+    async componentDidMount() {
+        try {
+            const total = await getTotal();
+            this.setState(() => ({...total}));
+        } catch (err) {
+            this.setState(() => ({error: err.message}));
+        }
     }
 
     render() {

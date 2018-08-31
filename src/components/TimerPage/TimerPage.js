@@ -2,6 +2,7 @@ import React from 'react';
 import SessionNameTimerBlock from "./SessionNameTimerBlock";
 import DateSessions from "./DateSessions";
 import moment from 'moment';
+import {getSessions, postSessions, getState, putState} from "./../apiCalls";
 
 export default class TimerPage extends React.Component {
 
@@ -11,78 +12,68 @@ export default class TimerPage extends React.Component {
         this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
         this.changeTimerStateOnServer = this.changeTimerStateOnServer.bind(this);
         this.getSessions = this.getSessions.bind(this);
+        this.putSessionState = this.putSessionState.bind(this);
+        this.initStateFromServer = this.initStateFromServer.bind(this);
+        this.postSession = this.postSession.bind(this);
         this.state = {
-            sessions: []
+            sessions: [],
+            error: ''
         };
     }
 
-    componentDidMount() {
-        this.getSessions(moment().format('YYYY-MM-DD'));
+    async componentDidMount() {
+        await this.getSessions(moment().format('YYYY-MM-DD'));
     }
 
-    initStateFromServer() {
-        const url = `http://localhost:3000/sessionState`;
-        return fetch(url)
-            .then((res) => res.json())
-            .catch((e) => console.log(e));
-    }
-
-    changeTimerStateOnServer(mode, modifiedSessionState, sessionName = '', duration = 0) {
-        if (mode === 'simple') {
-            this.putSessionState(modifiedSessionState)
-                .catch((e) => console.log(e));
-        } else if (mode === 'session') {
-            this.putSessionState(modifiedSessionState)
-                .then(() => {
-                    return this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration)
-                })
-                .then((res) => res.json())
-                .then((session) => {
-                    this.setState((prevState) => ({sessions: prevState.sessions.concat(session)}));
-                })
-                .catch((e) => console.log(e));
-        } else if (mode === 'break') {
-            this.putSessionState(modifiedSessionState)
-                .catch((e) => console.log(e));
+    async initStateFromServer() {
+        try {
+            return await getState();
+        } catch (err) {
+            this.setState(() => ({error: err.message}))
         }
     }
 
-    putSessionState(modifiedSessionState) {
-        const url = 'http://localhost:3000/sessionState';
-        const init = {
-            method: "PUT",
-            body: JSON.stringify(modifiedSessionState),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        return fetch(url, init);
-        // return fetch(url, init).then((res) => res.text())
-        //     .then((status) => document.querySelector("#root").innerHTML=status);
+    async changeTimerStateOnServer(mode, modifiedSessionState, sessionName = '', duration = 0) {
+        if (mode === 'simple') {
+            await this.putSessionState(modifiedSessionState);
+        } else if (mode === 'session') {
+            // sending state and session to server both in one time
+            await this.putSessionState(modifiedSessionState);
+            const session = await this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration);
+            this.setState((prevState) => ({sessions: prevState.sessions.concat(session)}));
+        } else if (mode === 'break') {
+            await this.putSessionState(modifiedSessionState);
+        }
     }
 
-    postSession(sessionName, date, duration) {
-        const url = 'http://localhost:3000/sessions';
-        const init = {
-            method: "POST",
-            body: JSON.stringify({sessionName, duration}),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        return fetch(url, init);
+    async putSessionState(modifiedSessionState) {
+        try {
+            return await putState(modifiedSessionState);
+        } catch (err) {
+            this.setState(() => ({error: err.message}))
+        }
     }
 
-    getSessions(date) {
-        const url = `http://localhost:3000/sessions?date=${date}`;
-        fetch(url)
-            .then((res) => res.json())
-            .then((sessions) => this.setState(() => ({sessions})))
+    async postSession(sessionName, date, duration) {
+        try {
+            return await postSessions(sessionName, duration);
+        } catch (err) {
+            this.setState(() => ({error: err.message}))
+        }
     }
 
-    onDateChangeHandler(date) {
+    async getSessions(date) {
+        try {
+            const sessions = await getSessions(date);
+            this.setState(() => ({sessions}))
+        } catch (err) {
+            this.setState(() => ({error: err.message}))
+        }
+    }
+
+    async onDateChangeHandler(date) {
         const formatDate = moment(date).format('YYYY-MM-DD');
-        this.getSessions(formatDate);
+        await this.getSessions(formatDate);
     }
 
     render() {

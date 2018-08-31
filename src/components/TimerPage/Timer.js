@@ -40,6 +40,10 @@ export default class Timer extends Component {
         }
     };
 
+    componentWillUnmount(){
+        clearInterval(this.timerState.__timerId);
+    }
+
     startCountdown() {
         this.timerState.__timerId = setInterval(() => {
             this.props.onTick();
