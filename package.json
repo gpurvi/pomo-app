@@ -4,16 +4,20 @@
   "private": true,
   "dependencies": {
     "chart.js": "^2.7.2",
+    "date-fns": "^1.29.0",
     "howler": "^2.0.12",
     "moment": "^2.22.2",
     "react": "^16.4.0",
     "react-date-picker": "^6.11.3",
     "react-dates": "^17.1.0",
     "react-dom": "^16.4.0",
+    "react-dropdown": "^1.6.2",
+    "react-modal": "^3.5.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
-    "redux": "^4.0.0"
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "enzyme": "^3.3.0",

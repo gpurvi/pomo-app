@@ -1,4 +1,4 @@
-import {getSessions, postSessions, putState, getState} from '../../src/components/apiCalls';
+import {getSessions, postSessions, putState, getState, patchSessions, deleteSessions} from '../apiCalls';
 
 describe('getSessions', () => {
     it('returns sessions object if status code is ok', () => {
@@ -20,6 +20,48 @@ describe('getSessions', () => {
         }));
 
         expect(getSessions()).rejects.toEqual(Error('Error fetching sessions'));
+    });
+});
+
+describe('patchSessions', () => {
+    it('patches and returns sessions object if status code is ok', () => {
+        window.fetch = jest.fn().mockImplementation(() => ({
+            status: 200,
+            json: () => new Promise((resolve) => {
+                resolve({
+                    sessions: {},
+                })
+            }),
+        }));
+        expect(patchSessions()).resolves.toEqual({sessions: {}})
+    });
+
+    it('throws an error if status code is not ok', () => {
+        window.fetch = jest.fn().mockImplementation(() => ({
+            status: 500
+        }));
+        expect(patchSessions()).rejects.toEqual(Error('Error update sessions'));
+    });
+});
+
+describe('deleteSessions', () => {
+    it('deletes session', () => {
+        window.fetch = jest.fn().mockImplementation(() => ({
+            status: 200,
+            json: () => new Promise((resolve) => {
+                resolve({
+                    sessions: {},
+                })
+            }),
+        }));
+        expect(deleteSessions()).resolves.toEqual({sessions: {}})
+    });
+
+    it('throws an error if status code is not ok', () => {
+        window.fetch = jest.fn().mockImplementation(() => ({
+            status: 500
+        }));
+        expect(deleteSessions()).rejects.toEqual(Error('Error in delete sessions'));
     });
 });
 

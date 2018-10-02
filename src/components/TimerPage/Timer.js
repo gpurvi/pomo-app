@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import moment from 'moment';
+import format from 'date-fns/format';
 import {Howl} from 'howler';
 
 export default class Timer extends Component {
@@ -9,6 +9,14 @@ export default class Timer extends Component {
         this.timerState= {
             __timerId: undefined
         };
+    }
+
+    componentDidMount(){
+        if(this.props.timerStarted && !this.props.timerPaused){
+            this.startCountdown();
+        } else if(this.props.breakTimerStarted){
+            this.startCountdown();
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -60,7 +68,7 @@ export default class Timer extends Component {
     render() {
         return (
             <div>
-                <h1>{moment(this.props.displayTime).format('mm:ss')}</h1>
+                <h1>{format(this.props.displayTime, 'mm:ss')}</h1>
             </div>
         );
     }

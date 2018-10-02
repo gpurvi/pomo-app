@@ -5,7 +5,8 @@ export default (env) => {
             sessions: 'http://localhost:3000/sessions',
             total: 'http://localhost:3000/total',
             sessionsMonth: 'http://localhost:3000/month',
-            sessionsYear: 'http://localhost:3000/year'
+            sessionsYear: 'http://localhost:3000/year',
+            names: 'http://localhost:3000/sessions/'
         };
     }
     return {
@@ -13,6 +14,7 @@ export default (env) => {
         sessions: 'api/sessions',
         total: 'api/total',
         sessionsMonth: 'api/sessions',
-        sessionsYear: 'api/sessions'
+        sessionsYear: 'api/sessions',
+        names: 'api/names'
     };
 }

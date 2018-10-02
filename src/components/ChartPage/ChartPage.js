@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from "moment";
+import subMonths from 'date-fns/sub_months';
 import '../../styles/components/DataPage.css';
 import ChartBlock from "./ChartBlock";
 import TotalBlock from "./TotalBlock";
@@ -8,17 +8,9 @@ export default class ChartPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            minDate: moment().subtract(10, 'month').toDate(),
+            minDate: subMonths(new Date(), 10)
         };
     }
-
-    // componentDidMount() {
-    //     try {
-    //
-    //     } catch (err) {
-    //
-    //     }
-    // }
 
     render() {
         return (

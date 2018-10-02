@@ -247,6 +247,10 @@ class SessionNameTimerBlock extends React.Component {
             this.state.timeLeft : this.state.timerDuration;
         return (
             <div>
+                <SessionName
+                    onChangeHandler={this.onChangeHandler}
+                    sessionName={this.state.sessionName}
+                />
                 <Timer
                     displayTime={displayTime}
                     breakTimerStarted={this.state.breakTimerStarted}
@@ -255,20 +259,20 @@ class SessionNameTimerBlock extends React.Component {
                     onTimerEndHandler={this.onStopHandler}
                     onTick={this.onTickHandler}
                 />
-                <SessionName
-                    onChangeHandler={this.onChangeHandler}
-                    sessionName={this.state.sessionName}
-                />
+                {this.props.full &&
                 <div>
-                    <StartPauseButton
-                        startPauseClickHandler={this.startPauseClickHandler}
-                        timerRunning={timerRunning}
-                    />
-                    <StopButton
-                        onStopHandler={this.onStopHandler}
-                        timerStarted={this.state.timerStarted || this.state.breakTimerStarted}
-                    />
+                    <div>
+                        <StartPauseButton
+                            startPauseClickHandler={this.startPauseClickHandler}
+                            timerRunning={timerRunning}
+                        />
+                        <StopButton
+                            onStopHandler={this.onStopHandler}
+                            timerStarted={this.state.timerStarted || this.state.breakTimerStarted}
+                        />
+                    </div>
                 </div>
+                }
             </div>
         );
     }

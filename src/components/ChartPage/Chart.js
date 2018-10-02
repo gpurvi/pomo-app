@@ -1,6 +1,7 @@
 import React from 'react';
 import Chartjs from '../../../node_modules/chart.js/src/chart';
-import moment from 'moment';
+import isSameDate from '../../utils/isSameDate';
+import isValid from 'date-fns/is_valid';
 
 export default class Chart extends React.Component {
     constructor(props) {
@@ -27,6 +28,27 @@ export default class Chart extends React.Component {
 
     }
 
+    componentDidMount() {
+        // console.log(this.props.labels);
+        const ctx = this.canvasRef.current.getContext('2d');
+        this.chart = new Chartjs(ctx, {
+            type: this.props.type,
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
     componentDidUpdate(prevProps) {
         const datasets = this.chart.data.datasets;
         let prevDate, nowDate;
@@ -34,7 +56,7 @@ export default class Chart extends React.Component {
         prevDate = prevProps.fetchedDate;
 
         // when initial fetch is done check prevProps for null, because initial is null
-        if ((prevDate === null) && moment.isMoment(nowDate)) {
+        if ((prevDate === null) && isValid(nowDate)) {
             if (this.props.showSessions) {
                 datasets.push(this.datasets[0]);
                 datasets[0].data = this.props.sessions;
@@ -48,10 +70,10 @@ export default class Chart extends React.Component {
                     datasets[1].data = this.props.durations;
                 }
             }
-            this.chart.data.labels =  this.props.labels;
+            this.chart.data.labels = this.props.labels;
             this.chart.update();
             // on subsequent check fetchDate eqaulity
-        } else if ((prevDate !== null) && !prevDate.isSame(nowDate)) {
+        } else if ((prevDate !== null) && !isSameDate(nowDate)) {
             if (this.props.showSessions) {
                 datasets[0].data = this.props.sessions;
             }
@@ -91,27 +113,6 @@ export default class Chart extends React.Component {
             }
             this.chart.update();
         }
-    }
-
-    componentDidMount() {
-        // console.log(this.props.labels);
-        const ctx = this.canvasRef.current.getContext('2d');
-        this.chart = new Chartjs(ctx, {
-            type: this.props.type,
-            data: {
-                labels: [],
-                datasets: []
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });
     }
 
     render() {

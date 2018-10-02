@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from "./Chart";
-import moment from "moment";
+import isValid from 'date-fns/is_valid';
+import format from 'date-fns/format';
 import ChartButtons from "./ChartButtons";
 import ChartHeader from "./ChartHeader";
 
@@ -28,15 +29,14 @@ export default class ChartInter extends React.Component {
 
     render() {
         const type = this.props.type;
+        const propsDate = this.props.date;
         let maxDetail, date;
         if (type === 'line') {
-            const momentDate = moment(this.props.date);
             maxDetail = 'year';
-            date = momentDate.isValid() ? momentDate.format('M/YYYY') : '';
+            date = isValid(propsDate) ? format(propsDate, 'M/YYYY') : '';
         } else {
-            const momentDate = moment(this.props.date);
             maxDetail = 'decade';
-            date = momentDate.isValid() ? momentDate.format('YYYY') : '';
+            date = isValid(propsDate) ? format(propsDate, 'YYYY') : '';
         }
         return (
             <div>
@@ -60,10 +60,10 @@ export default class ChartInter extends React.Component {
                     showDurations={this.state.showDurations}
                     date={this.props.date}
                     onDateChange={this.props.onDateChange}
-                    nextDisabled={this.props.nextDisabled}
-                    prevDisabled={this.props.prevDisabled}
+                    // nextDisabled={this.props.nextDisabled}
+                    // prevDisabled={this.props.prevDisabled}
                     onCheck={this.onCheckHandler}
-                    onDateChangeClick={this.props.onDateChangeClick}
+                    // onDateChangeClick={this.props.onDateChangeClick}
                 />
             </div>
         );

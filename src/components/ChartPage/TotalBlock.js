@@ -1,6 +1,6 @@
 import React from 'react';
 import TotalTable from "./TotalTable";
-import {getTotal} from "../apiCalls";
+import {getTotal} from "../common/apiCalls";
 
 export default class TotalBlock extends React.Component {
     constructor(props) {

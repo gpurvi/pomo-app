@@ -1,20 +1,14 @@
 import React from 'react';
-import {NavLink, Route} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import Header from './Header';
-import Timer from "../TimerPage/Timer";
+import TimerRoute from "../../routers/TimerRoute";
 
-const HeaderRoute = ({location}) => {
-    console.log(location);
-    const {timerStarted} = JSON.parse(localStorage.getItem('sessionState'));
+const HeaderRoute = ({match}) => {
+    console.log(match.path);
     return (
         <div>
             <Route component={Header}/>
-            {timerStarted &&
-            <Route
-                path='/chart'
-                /*component={Timer}*/
-                render={() => <p>bbasb</p>}/>
-            }
+            <Route path='/chart' component={TimerRoute}/>
         </div>
     );
 };

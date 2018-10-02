@@ -24,6 +24,13 @@ const ChartDatePicker = (props) => {
                 onClick={props.onDateChangeClick}
                 text='next'
             />
+            {props.today &&
+            <SimpleButton
+                disabled={props.todayDisabled}
+                onClick={this.onDateChangeClick}
+                text='today'
+                dataAttr="now"/>
+            }
         </div>
     )
 };

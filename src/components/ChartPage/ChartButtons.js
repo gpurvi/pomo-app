@@ -1,5 +1,6 @@
 import React from 'react';
-import ChartDatePicker from "./ChartDatePicker";
+// import ChartDatePicker from "./ChartDatePicker";
+import DatePickerV1 from "../common/DatePickerV1";
 
 const ChartButtons = (props) => (
     <div>
@@ -21,16 +22,24 @@ const ChartButtons = (props) => (
             />
             Hours
         </label>
-        <ChartDatePicker
-            nextDisabled={props.nextDisabled}
-            prevDisabled={props.prevDisabled}
+        <DatePickerV1
             minDate={props.minDate}
             maxDate={props.maxDate}
-            maxDetail={props.maxDetail}
             onDateChange={props.onDateChange}
             date={props.date}
-            onDateChangeClick={props.onDateChangeClick}
+            today={false}
+            maxDetail={props.maxDetail}
         />
+        {/*<ChartDatePicker*/}
+        {/*nextDisabled={props.nextDisabled}*/}
+        {/*prevDisabled={props.prevDisabled}*/}
+        {/*minDate={props.minDate}*/}
+        {/*maxDate={props.maxDate}*/}
+        {/*maxDetail={props.maxDetail}*/}
+        {/*onDateChange={props.onDateChange}*/}
+        {/*date={props.date}*/}
+        {/*onDateChangeClick={props.onDateChangeClick}*/}
+        {/*/>*/}
     </div>
 );
 

@@ -9,8 +9,13 @@ const Header = () => (
         <NavLink to="/chart">
             chart page
         </NavLink>
+        <NavLink to="/edit">
+            Edit page
+        </NavLink>
+        <NavLink to="/settings">
+            Settings page
+        </NavLink>
     </header>
-
 );
 
 export default Header;

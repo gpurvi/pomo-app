@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import moment from "moment/moment";
-import DateSessions from '../../components/TimerPage/DateSessions';
+import DateSessions from '../DateSessions';
 
 const data = [
     {sessionName: "app", count: 5, timeInMillis: 0},
