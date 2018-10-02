@@ -1,35 +1,4 @@
-// import {getState} from 'redux';
-// import {getState} from "../components/apiCalls";
-//
-// let timerReducerDefaultState;
-// const sessionState = JSON.parse(localStorage.getItem('sessionState'));
-//
-// if (sessionState !== null) {
-//     timerReducerDefaultState = {...sessionState};
-// } else {
-//     const initStateFromServer = async () => {
-//         try {
-//             return await getState();
-//         } catch (err) {
-//             this.setState(() => ({error: err.message}))
-//         }
-//     };
-//     initStateFromServer();
-// }
-//  const   timerReducerDefaultState = {
-//     timerDuration: 5000,
-//     breakDuration: 5000,
-//     breakTimerStarted: false,
-//     timerStarted: false,
-//     timerPaused: false,
-//     timeLeft: 0,
-//     sessionName: "",
-//     timerEndAt: 0,
-//     breakTimerEndAt: 0
-// };
-
-
-const timerReducerEmptyState = {
+const timerReducerDefaultState = {
     timerDuration: 0,
     breakDuration: 0,
     breakTimerStarted: false,
@@ -41,15 +10,7 @@ const timerReducerEmptyState = {
     breakTimerEndAt: 0
 };
 
-const timerReducerDefaultState = () => {
-    const sessionState = JSON.parse(localStorage.getItem('sessionState'));
-    if (sessionState !== null) {
-        return {...sessionState};
-    }
-    return timerReducerEmptyState;
-};
-
-export default (state = timerReducerDefaultState(), action) => {
+export default (state = timerReducerDefaultState, action) => {
     switch (action.type) {
         case 'INIT_TIMER':
             return {
