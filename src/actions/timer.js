@@ -43,13 +43,13 @@ export const startTimer = ({timerEndAt, breakTimerEndAt, sessionName}) => {
             breakTimerEndAt,
             sessionName
         };
-        localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
         dispatch({
             type: 'START_TIMER',
             timerStarted: true,
             timerEndAt,
             breakTimerEndAt
         });
+        localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
         try {
             await putState(modifiedSessionState);
         } catch (err) {

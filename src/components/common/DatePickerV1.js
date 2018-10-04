@@ -1,10 +1,14 @@
 import React from "react";
 import DatePicker from "react-date-picker";
-import SimpleButton from "../buttons/SimpleButton";
-import moment from "moment";
-import isValid from 'date-fns/is_valid';
+import addMonths from 'date-fns/add_months';
+import addYears from 'date-fns/add_years';
+import subDays from 'date-fns/sub_days';
+import addDays from 'date-fns/add_days';
+import subYears from 'date-fns/sub_years';
+import subMonths from 'date-fns/sub_months';
 import isSameDate from './../../utils/isSameDate';
-
+import isDate from 'date-fns/is_date';
+import SimpleButton from "../buttons/SimpleButton";
 
 export default class DatePickerV1 extends React.Component {
     constructor(props) {
@@ -23,12 +27,12 @@ export default class DatePickerV1 extends React.Component {
 
     componentDidUpdate() {
         // const prevDate = moment(prevProps.date);
-        const nowDate = moment(this.props.date);
+        const nowDate = this.props.date;
 
         //check for valid because may return null as date
-        if (nowDate.isValid()) {
+        if (isDate(nowDate)) {
             this.buttonDisabler(nowDate);
-        } else if (!nowDate.isValid()) {
+        } else if (!isDate(nowDate)) {
             if (!this.state.nextDisabled || !this.state.prevDisabled) {
                 this.setState(() => ({
                     prevDisabled: true,
@@ -42,31 +46,31 @@ export default class DatePickerV1 extends React.Component {
     buttonDisabler(nowDate) {
         const isSameEquality = this.getTimePeriod();
         // toggle disable state of next button
-        if (nowDate.isSame(moment(this.props.maxDate), isSameEquality) && !this.state.nextDisabled) {
+        if (isSameDate(this.props.maxDate, nowDate, isSameEquality) && !this.state.nextDisabled) {
             this.setState(() => ({
                 nextDisabled: true
             }));
-        } else if (!nowDate.isSame(moment(this.props.maxDate), isSameEquality) && this.state.nextDisabled) {
+        } else if (!isSameDate(this.props.maxDate, nowDate, isSameEquality) && this.state.nextDisabled) {
             this.setState(() => ({
                 nextDisabled: false
             }));
         }
         // toggle disable state of prev button
-        if (nowDate.isSame(moment(this.props.minDate), isSameEquality) && !this.state.prevDisabled) {
+        if (isSameDate(this.props.minDate, nowDate, isSameEquality) && !this.state.prevDisabled) {
             this.setState(() => ({
                 prevDisabled: true
             }));
-        } else if (!nowDate.isSame(moment(this.props.minDate), isSameEquality) && this.state.prevDisabled) {
+        } else if (!isSameDate(this.props.minDate, nowDate, isSameEquality) && this.state.prevDisabled) {
             this.setState(() => ({
                 prevDisabled: false
             }));
         }
         // toggle disable state of today button
-        if (nowDate.isSame(moment(), isSameEquality) && !this.state.todayDisabled) {
+        if (isSameDate(new Date(), nowDate, isSameEquality) && !this.state.todayDisabled) {
             this.setState(() => ({
                 todayDisabled: true
             }));
-        } else if (!nowDate.isSame(moment(), isSameEquality) && this.state.todayDisabled) {
+        } else if (!isSameDate(new Date(), nowDate, isSameEquality) && this.state.todayDisabled) {
             this.setState(() => ({
                 todayDisabled: false
             }));
@@ -79,16 +83,27 @@ export default class DatePickerV1 extends React.Component {
         if ((data instanceof Date) || data === null) {
             this.props.onDateChange(data);
         } else {
+            //called block when date changed via buttons
             const action = data.target.dataset.attr;
             let timePeriod = this.getTimePeriod();
             if (action === 'prev') {
-                this.props.onDateChange(moment(this.props.date)
-                    .subtract(1, timePeriod).toDate());
+                if (timePeriod === 'day') {
+                    this.props.onDateChange(subDays(this.props.date, 1));
+                } else if (timePeriod === 'month') {
+                    this.props.onDateChange(subMonths(this.props.date, 1));
+                } else if (timePeriod === 'year') {
+                    this.props.onDateChange(subYears(this.props.date, 1));
+                }
             } else if (action === 'next') {
-                this.props.onDateChange(moment(this.props.date)
-                    .add(1, timePeriod).toDate());
+                if (timePeriod === 'day') {
+                    this.props.onDateChange(addDays(this.props.date, 1));
+                } else if (timePeriod === 'month') {
+                    this.props.onDateChange(addMonths(this.props.date, 1));
+                } else if (timePeriod === 'year') {
+                    this.props.onDateChange(addYears(this.props.date, 1));
+                }
             } else if (action === 'today') {
-                this.props.onDateChange(moment().toDate());
+                this.props.onDateChange(new Date());
             }
         }
     }
@@ -104,9 +119,11 @@ export default class DatePickerV1 extends React.Component {
         }
     }
 
+    //todo resolve minDate problem
     render() {
         return (
             <div>
+
                 <DatePicker
                     minDate={this.props.minDate}
                     maxDate={this.props.maxDate}

@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from 'react-redux';
-// import SessionName from "./SessionName";
 import Dropdown from '../../components/common/Dropdown';
 import StartPauseButton from "../buttons/StartPauseButton";
 import StopButton from "../buttons/StopButton";
@@ -40,7 +39,7 @@ class TimerButtons extends React.Component {
         // when break timer running do nothing
         if (!this.props.breakTimerStarted) {
             //start timer
-            if (!this.props.timerStarted && !this.props.breakTimerStarted) {
+            if (!this.props.timerStarted) {
                 const timerEndAt = this.props.timerDuration + new Date().valueOf();
                 const breakTimerEndAt = timerEndAt + this.props.breakDuration;
                 const sessionName = this.props.sessionName;
@@ -68,7 +67,6 @@ class TimerButtons extends React.Component {
             <div>
                 <Dropdown
                     timerStarted={timerStarted}
-                    // readOnly={timerRunning}
                     onChangeHandler={this.onChangeHandler}
                     sessionName={this.props.sessionName}
                 />

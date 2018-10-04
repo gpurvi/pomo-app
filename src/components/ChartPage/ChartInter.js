@@ -1,6 +1,6 @@
 import React from 'react';
 import Chart from "./Chart";
-import isValid from 'date-fns/is_valid';
+import isDate from 'date-fns/is_date';
 import format from 'date-fns/format';
 import ChartButtons from "./ChartButtons";
 import ChartHeader from "./ChartHeader";
@@ -33,10 +33,10 @@ export default class ChartInter extends React.Component {
         let maxDetail, date;
         if (type === 'line') {
             maxDetail = 'year';
-            date = isValid(propsDate) ? format(propsDate, 'M/YYYY') : '';
+            date = isDate(propsDate) ? format(propsDate, 'M/YYYY') : '';
         } else {
             maxDetail = 'decade';
-            date = isValid(propsDate) ? format(propsDate, 'YYYY') : '';
+            date = isDate(propsDate) ? format(propsDate, 'YYYY') : '';
         }
         return (
             <div>
@@ -60,10 +60,7 @@ export default class ChartInter extends React.Component {
                     showDurations={this.state.showDurations}
                     date={this.props.date}
                     onDateChange={this.props.onDateChange}
-                    // nextDisabled={this.props.nextDisabled}
-                    // prevDisabled={this.props.prevDisabled}
                     onCheck={this.onCheckHandler}
-                    // onDateChangeClick={this.props.onDateChangeClick}
                 />
             </div>
         );

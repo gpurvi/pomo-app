@@ -8,7 +8,7 @@ const DateSessions = ({onDateChange, date, sessions}) => (
     <div>
         <h1>Sessions</h1>
         <DatePickerV1
-            minDate={subDays(new Date(), 5)}
+            minDate={subDays(new Date(), 500)}
             maxDate={new Date()}
             onDateChange={onDateChange}
             date={date}

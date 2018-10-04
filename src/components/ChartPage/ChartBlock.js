@@ -2,8 +2,13 @@ import React from 'react';
 import ChartInter from "./ChartInter";
 import format from 'date-fns/format';
 import getDaysInMonth from 'date-fns/get_days_in_month';
-import moment from "moment";
-import {getSessionsDurations} from "../common/apiCalls";
+import subDays from 'date-fns/sub_days';
+import getDate from 'date-fns/get_date';
+import getMonth from 'date-fns/get_month';
+import isDate from 'date-fns/is_date';
+import {getSessions} from "../common/apiCalls";
+import {reduceSessionsByTimePeriod} from "../../utils/reduceSessions";
+import isSameDate from "../../utils/isSameDate";
 
 export default class ChartBlock extends React.Component {
     constructor(props) {
@@ -14,7 +19,7 @@ export default class ChartBlock extends React.Component {
             sessions: [],
             durations: [],
             maxDate: new Date(),
-            date: new Date(),
+            date: subDays(new Date(), 6),
             fetchedDate: null, //state which changes when data is fetched, need for chart to show right data
             error: ''
         };
@@ -24,6 +29,7 @@ export default class ChartBlock extends React.Component {
         this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
         this.getSessionData = this.getSessionData.bind(this);
         this.fetchedDataEmpty = this.fetchedDataEmpty.bind(this);
+        this.prepareDataForChart = this.prepareDataForChart.bind(this);
     }
 
 
@@ -33,27 +39,15 @@ export default class ChartBlock extends React.Component {
     }
 
     async componentDidUpdate(prevProps, prevState) {
-
-        const prevDate = moment(prevState.date);
-        const nowDate = moment(this.state.date);
-        // console.log(prevDate, nowDate);
+        const prevDate = prevState.date;
+        const nowDate = this.state.date;
         // after date is updated fetch new data
         // isValid because it is possible to get invalid date from DatePicker
-        if (nowDate.isValid()) {
-            if (!prevDate.isSame(nowDate)) {
-                // this.fetchData();
+        if (isDate(nowDate)) {
+            if (!isSameDate(prevDate, nowDate)) {
                 await this.getSessionData();
             }
-            // this.buttonDisabler(nowDate, prevDate);
         }
-        /*else if (!nowDate.isValid()) {
-                   if (!this.state.nextDisabled || !this.state.prevDisabled) {
-                       this.setState(() => ({
-                           prevDisabled: true,
-                           nextDisabled: true
-                       }));
-                   }
-               }*/
     }
 
 
@@ -63,11 +57,10 @@ export default class ChartBlock extends React.Component {
         const fetchedDate = this.state.date;
         const timePeriod = this.line ? 'month' : 'year';
         try {
-            //this fetch is for dev server
-            const sessionData = await getSessionsDurations(formatDate, timePeriod);
-            // console.log(sessionData);
+            const sessionData = await getSessions(formatDate, timePeriod);
+            const reducedSessions = reduceSessionsByTimePeriod(sessionData, timePeriod);
             this.setState(() => ({
-                ...this.normalizeData(sessionData, fetchedDate),
+                ...this.prepareDataForChart(reducedSessions, fetchedDate),
                 fetchedDate
             }));
         } catch (err) {
@@ -77,8 +70,7 @@ export default class ChartBlock extends React.Component {
         }
     }
 
-    normalizeData(data, date) {
-        // console.log(data);
+    prepareDataForChart(data, date) {
         let o = {sessions: [], durations: []};
         if (data.length === 0) {
             return this.fetchedDataEmpty(o);
@@ -88,11 +80,11 @@ export default class ChartBlock extends React.Component {
             const daysInMonth = getDaysInMonth(date);
             for (let i = 1; i <= daysInMonth; i++) {
                 o.labels.push(i);
-                const _item = data[0].data.find((item) => item.date === i);
+                const _item = data.find((item) => getDate(item.date) === i);
                 if (_item !== undefined) {
-                    let {sessions, durations} = _item;
-                    o.sessions.push(sessions);
-                    o.durations.push(durations);
+                    let {count, duration} = _item;
+                    o.sessions.push(count);
+                    o.durations.push(this.prepareDuration(duration, 'line'));
                 } else {
                     o.sessions.push(0);
                     o.durations.push(0);
@@ -100,11 +92,11 @@ export default class ChartBlock extends React.Component {
             }
         } else if (!this.line) {
             for (let i = 1; i <= 12; i++) {
-                const _item = data[0].data.find((item) => item.date === i);
+                const _item = data.find((item) => getMonth(item.date) === i);
                 if (_item !== undefined) {
-                    let {sessions, durations} = _item;
-                    o.sessions.push(sessions);
-                    o.durations.push(durations);
+                    let {count, duration} = _item;
+                    o.sessions.push(count);
+                    o.durations.push(this.prepareDuration(duration, 'bar'));
                 } else {
                     o.sessions.push(0);
                     o.durations.push(0);
@@ -114,13 +106,21 @@ export default class ChartBlock extends React.Component {
         return o;
     }
 
+    prepareDuration(duration, chartType) {
+        if (chartType === 'line') {
+            return (duration / (1000 * 60 * 60)).toPrecision(2);
+        }
+        return (duration / (1000 * 60 * 60)).toPrecision(3);
+    }
+
     fetchedDataEmpty(o) {
         if (this.line) {
             return {
                 ...o,
                 labels: (() => {
                     let ar = [];
-                    const daysInMonth = moment(this.state.date).daysInMonth();
+
+                    const daysInMonth = getDaysInMonth(this.state.date);
                     for (let i = 1; i <= daysInMonth; i++) {
                         ar.push(i);
                     }

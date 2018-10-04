@@ -6,12 +6,19 @@ const env = 'dev';
 const urls = url(env);
 
 //get by date sessions
-export const getSessions = async (date) => {
-    const response = await fetch(`${urls.sessions}?date=${date}`);
-    if (response.status >= 400) {
-        throw(new Error('Error fetching sessions'))
-    } else {
-        return await response.json()
+export const getSessions = async (date, timePeriod = 'day') => {
+    let response;
+    if (env === 'dev') {
+        if (timePeriod === 'day') {
+            response = await fetch(`${urls.sessions}?date=${date}`);
+        } else {
+            response = await fetch(`${urls.sessions}?q=${date}`);
+        }
+        if (response.status >= 400) {
+            throw(new Error('Error fetching sessions'))
+        } else {
+            return await response.json()
+        }
     }
 };
 //get by id sessions
@@ -151,3 +158,18 @@ export const getSessionsDurations = async (date, length) => {
     }
 };
 
+// // get mindate
+// export const getMinDate = async () => {
+//     //development server url
+//     if (env === 'dev') {
+//         const response = await fetch(urls.minDate);
+//         if (response.status >= 400) {
+//             throw(new Error('Error fetching minDate'))
+//         } else {
+//             const names = await response.json();
+//             //helper function to imitate data returned from server
+//             return reduceNames(names, count);
+//         }
+//     }
+//     await fetch();
+// };

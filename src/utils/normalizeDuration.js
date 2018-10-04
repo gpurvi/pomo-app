@@ -1,6 +1,5 @@
 import format from 'date-fns/format';
 
-
 const normalizeDuration = (duration) => {
 // if under 1 hour don't show 0 hour
     if (duration < 3600000) {

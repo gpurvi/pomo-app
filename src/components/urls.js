@@ -6,7 +6,8 @@ export default (env) => {
             total: 'http://localhost:3000/total',
             sessionsMonth: 'http://localhost:3000/month',
             sessionsYear: 'http://localhost:3000/year',
-            names: 'http://localhost:3000/sessions/'
+            names: 'http://localhost:3000/sessions/',
+            minDate: 'http://localhost:3000/sessions/',
         };
     }
     return {
@@ -15,6 +16,7 @@ export default (env) => {
         total: 'api/total',
         sessionsMonth: 'api/sessions',
         sessionsYear: 'api/sessions',
-        names: 'api/names'
+        names: 'api/names',
+        //todo minDate: '', need to implement
     };
 }

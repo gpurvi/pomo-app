@@ -2,8 +2,8 @@ import React from 'react';
 import TimerBlockWrapper from "./../components/common/TimerBlockWrapper";
 import connect from "react-redux/es/connect/connect";
 
-const TimerRoute = ({timerStarted, breakTimerStarted, location}) => {
-    if ((timerStarted || breakTimerStarted) && (location.pathname !== '/')) {
+const TimerRoute = ({timerStarted, timerPaused, breakTimerStarted, location}) => {
+    if (((timerStarted && !timerPaused) || breakTimerStarted) && (location.pathname !== '/')) {
         return (
             <TimerBlockWrapper/>
         );
@@ -13,8 +13,8 @@ const TimerRoute = ({timerStarted, breakTimerStarted, location}) => {
     }
 };
 
-const mapStateToProps = ({timerStarted, breakTimerStarted}) => ({
-    timerStarted, breakTimerStarted
+const mapStateToProps = ({timerStarted, breakTimerStarted, timerPaused}) => ({
+    timerStarted, breakTimerStarted, timerPaused
 });
 
 export default connect(mapStateToProps)(TimerRoute);
