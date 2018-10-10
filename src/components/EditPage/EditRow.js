@@ -2,14 +2,14 @@ import React from 'react';
 import Rename from './Rename';
 import Delete from './Delete';
 
-const EditRow = ({firstCol, secCol, thirdCol, id, getSessions, onError}) => (
+const EditRow = ({firstCol, secCol, thirdCol, id, deleteOnClick, onError, renameOnClick}) => (
     <tr>
         <td>{firstCol}</td>
         <td>{secCol}</td>
         <td>{thirdCol}</td>
         <td>
             <Rename
-                getSessions={getSessions}
+                renameOnClick={renameOnClick}
                 onError={onError}
                 id={id}
                 modalName='Rename'
@@ -18,7 +18,7 @@ const EditRow = ({firstCol, secCol, thirdCol, id, getSessions, onError}) => (
         </td>
         <td>
             <Delete
-                getSessions={getSessions}
+                deleteOnClick={deleteOnClick}
                 onError={onError}
                 id={id}
                 modalName='Delete'

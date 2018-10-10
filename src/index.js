@@ -4,19 +4,19 @@ import {Provider} from 'react-redux';
 import configureStore from './store/configureStore';
 import './index.css';
 import AppRouter from './routers/AppRouters';
-import {initTimer} from "./actions/timer";
+import {initApp} from "./actions/timer";
+// import {getAppState} from "./components/common/apiCalls";
+// import {getMinDate} from "./components/common/apiCalls";
 // import {createDummyData} from "./dev/helpers";
 // import {getSessions} from "./components/common/apiCalls";
 //
 // // document.write(createDummyData());
 //
-// getSessions('2017-05', 'month', true).then((data)=>{
-//     console.log(data) ;
-// });
 
+// getAppState().then((data)=> console.log(data));
 
 const store = configureStore();
-store.dispatch(initTimer());
+store.dispatch(initApp());
 
 const jsx = (
     <Provider store={store}>

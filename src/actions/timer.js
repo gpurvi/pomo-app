@@ -1,8 +1,8 @@
-import {putState, getState} from "../components/common/apiCalls";
+import {putState, getSessionState} from "../components/common/apiCalls";
 import {timeLeftInit} from "../utils/timeLeftInit";
 
 //INIT_TIMER
-export const initTimer = () => {
+export const initApp = () => {
     return async (dispatch) => {
         const sessionState = JSON.parse(localStorage.getItem('sessionState'));
         if (sessionState !== null) {
@@ -14,14 +14,15 @@ export const initTimer = () => {
             });
         } else {
             try {
-                const state = await getState();
+                const sessionState = await getSessionState();
                 // perform check for timer started state and if true init timeLeft
-                const timeLeft = timeLeftInit(state);
+                const timeLeft = timeLeftInit(sessionState);
                 dispatch({
                     type: 'INIT_TIMER',
-                    state: {...state, timeLeft}
+                    state: {...sessionState, timeLeft}
                 });
-                localStorage.setItem('sessionState', JSON.stringify({...state}));
+                localStorage.setItem('sessionState', JSON.stringify({...sessionState}));
+                // localStorage.setItem('appState', JSON.stringify({...appState}));
             } catch (err) {
                 dispatch({
                     type: 'ERROR',

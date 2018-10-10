@@ -23,7 +23,6 @@ const ChartButtons = (props) => (
         </label>
         <DatePickerV1
             minDate={props.minDate}
-            maxDate={props.maxDate}
             onDateChange={props.onDateChange}
             date={props.date}
             today={false}

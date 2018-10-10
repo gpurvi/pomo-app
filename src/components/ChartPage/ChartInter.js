@@ -55,7 +55,6 @@ export default class ChartInter extends React.Component {
                 <ChartButtons
                     maxDetail={maxDetail}
                     minDate={this.props.minDate}
-                    maxDate={this.props.maxDate}
                     showSessions={this.state.showSessions}
                     showDurations={this.state.showDurations}
                     date={this.props.date}

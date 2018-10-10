@@ -2,12 +2,10 @@ import React from 'react';
 import ChartInter from "./ChartInter";
 import format from 'date-fns/format';
 import getDaysInMonth from 'date-fns/get_days_in_month';
-import subDays from 'date-fns/sub_days';
 import getDate from 'date-fns/get_date';
 import getMonth from 'date-fns/get_month';
 import isDate from 'date-fns/is_date';
 import {getSessions} from "../common/apiCalls";
-import {reduceSessionsByTimePeriod} from "../../utils/reduceSessions";
 import isSameDate from "../../utils/isSameDate";
 
 export default class ChartBlock extends React.Component {
@@ -18,8 +16,7 @@ export default class ChartBlock extends React.Component {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             sessions: [],
             durations: [],
-            maxDate: new Date(),
-            date: subDays(new Date(), 6),
+            date: new Date(),
             fetchedDate: null, //state which changes when data is fetched, need for chart to show right data
             error: ''
         };
@@ -50,7 +47,6 @@ export default class ChartBlock extends React.Component {
         }
     }
 
-
     async getSessionData() {
         const formatDate = this.line ? format(this.state.date, 'YYYY-MM') :
             format(this.state.date, 'YYYY');
@@ -58,9 +54,8 @@ export default class ChartBlock extends React.Component {
         const timePeriod = this.line ? 'month' : 'year';
         try {
             const sessionData = await getSessions(formatDate, timePeriod);
-            const reducedSessions = reduceSessionsByTimePeriod(sessionData, timePeriod);
             this.setState(() => ({
-                ...this.prepareDataForChart(reducedSessions, fetchedDate),
+                ...this.prepareDataForChart(sessionData, fetchedDate),
                 fetchedDate
             }));
         } catch (err) {
@@ -151,7 +146,6 @@ export default class ChartBlock extends React.Component {
                 sessionsLabel={this.props.sessionsLabel}
                 durationsLabel={this.props.durationsLabel}
                 minDate={this.props.minDate}
-                maxDate={this.state.maxDate}
                 labels={this.state.labels}
                 onDateChange={this.onDateChangeHandler}
             />

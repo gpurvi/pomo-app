@@ -38,7 +38,6 @@ ShallowWrapper {
 </label>,
         <DatePickerV1
           date={undefined}
-          maxDate={undefined}
           maxDetail={undefined}
           minDate={undefined}
           onDateChange={undefined}
@@ -124,7 +123,6 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "date": undefined,
-          "maxDate": undefined,
           "maxDetail": undefined,
           "minDate": undefined,
           "onDateChange": undefined,
@@ -164,7 +162,6 @@ ShallowWrapper {
 </label>,
           <DatePickerV1
             date={undefined}
-            maxDate={undefined}
             maxDetail={undefined}
             minDate={undefined}
             onDateChange={undefined}
@@ -250,7 +247,6 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "date": undefined,
-            "maxDate": undefined,
             "maxDetail": undefined,
             "minDate": undefined,
             "onDateChange": undefined,

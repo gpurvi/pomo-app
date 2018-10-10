@@ -1,6 +1,5 @@
 import React from 'react';
 import {withModal} from "../common/Modal";
-import {patchSessions} from "../common/apiCalls";
 
 export class Rename extends React.Component {
     constructor(props) {
@@ -21,12 +20,7 @@ export class Rename extends React.Component {
 
     async onClickHandler(e) {
         e.preventDefault();
-        try {
-            await patchSessions(this.props.id, this.state.value);
-            this.props.getSessions();
-        } catch (err) {
-            this.props.onError(err.message);
-        }
+        this.props.renameOnClick(this.state.value, this.props.id);
         this.props.closeModal();
     }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import 'react-dates/initialize';
 import {SingleDatePicker} from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
-import SimpleButton from '../buttons/SimpleButton';
+import SimpleButton from '../components/buttons/SimpleButton';
 
 
 export default class DatePicker extends React.Component {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import SessionNameTimerBlock from '../SessionNameTimerBlock';
-import StopButton from '../../buttons/StopButton';
+import SessionNameTimerBlock from './SessionNameTimerBlock';
+import StopButton from '../components/buttons/StopButton';
 
 test('', () => {
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import DateSessions from "./DateSessions";
 import isSameDate from './../../utils/isSameDate';
 import format from 'date-fns/format';
-import {getSessions, postSessions, getState} from "../common/apiCalls";
+import {getSessions, postSessions} from "../common/apiCalls";
 import TimerBlock from "./TimerBlock";
 import TimerButtons from "./TimerButtons";
 
@@ -14,7 +14,6 @@ export default class TimerPage extends React.Component {
         this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
         this.onStopTimerHandler = this.onStopTimerHandler.bind(this);
         this.getSessions = this.getSessions.bind(this);
-        this.initStateFromServer = this.initStateFromServer.bind(this);
         this.postSession = this.postSession.bind(this);
         this.state = {
             date: new Date(),
@@ -25,14 +24,6 @@ export default class TimerPage extends React.Component {
 
     async componentDidMount() {
         await this.getSessions(format(new Date(), 'YYYY-MM-DD'));
-    }
-
-    async initStateFromServer() {
-        try {
-            return await getState();
-        } catch (err) {
-            this.setState(() => ({error: err.message}))
-        }
     }
 
     async onStopTimerHandler({sessionName, duration}) {
@@ -61,7 +52,7 @@ export default class TimerPage extends React.Component {
 
     async onDateChangeHandler(date) {
         this.setState(() => ({date}));
-        if(date!== null){
+        if (date !== null) {
             await this.getSessions(format(date, 'YYYY-MM-DD'));
         }
     }

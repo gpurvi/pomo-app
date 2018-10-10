@@ -7,7 +7,7 @@ export default (env) => {
             sessionsMonth: 'http://localhost:3000/month',
             sessionsYear: 'http://localhost:3000/year',
             names: 'http://localhost:3000/sessions/',
-            minDate: 'http://localhost:3000/sessions/',
+            minDate: 'http://localhost:3000/sessions/'
         };
     }
     return {
@@ -18,5 +18,6 @@ export default (env) => {
         sessionsYear: 'api/sessions',
         names: 'api/names',
         //todo minDate: '', need to implement
+        //todo appState: '', need to implement
     };
 }

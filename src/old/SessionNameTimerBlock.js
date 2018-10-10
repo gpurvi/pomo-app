@@ -1,8 +1,8 @@
 import React from 'react';
-import Timer from "./Timer";
-import {SessionName} from "./SessionName";
-import StartPauseButton from "../buttons/StartPauseButton";
-import StopButton from "../buttons/StopButton";
+import Timer from "../components/TimerPage/Timer";
+import {SessionName} from "../components/TimerPage/SessionName";
+import StartPauseButton from "../components/buttons/StartPauseButton";
+import StopButton from "../components/buttons/StopButton";
 
 class SessionNameTimerBlock extends React.Component {
     constructor(props) {

@@ -1,11 +1,10 @@
 import React from 'react';
-import moment from "moment";
+import format from 'date-fns/format';
 import {getSessions} from "../common/apiCalls";
 import EditTable from "./EditTable";
 import SimpleButton from "../buttons/SimpleButton";
-// import DatePicker from "../TimerPage/DatePicker";
-// import ChartDatePicker from "../ChartPage/ChartDatePicker";
 import DatePickerV1 from "../common/DatePickerV1";
+import {patchSessions, deleteSessions} from "../common/apiCalls";
 
 export default class EditPage extends React.Component {
 
@@ -18,11 +17,12 @@ export default class EditPage extends React.Component {
         this.onClickHandler = this.onClickHandler.bind(this);
         this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
         this.onErrorHandler = this.onErrorHandler.bind(this);
+        this.getUpdateSessions = this.getUpdateSessions.bind(this);
+        this.renameOnClickHandler = this.renameOnClickHandler.bind(this);
+        this.deleteOnClickHandler = this.deleteOnClickHandler.bind(this);
         // this.initStateFromServer = this.initStateFromServer.bind(this);
         // this.postSession = this.postSession.bind(this);
         this.state = {
-            minDate: moment().subtract(5, 'days').toDate(),
-            maxDate: new Date(),
             date: new Date(),
             editType: 'day',
             sessions: [],
@@ -33,11 +33,15 @@ export default class EditPage extends React.Component {
     }
 
     async componentDidMount() {
-        await this.getSessions();
+        await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
     }
 
-    componentDidUpdate(prevProps, prevState){
-        console.log(this.state.date);
+    async componentDidUpdate(prevProps, prevState) {
+        if ((prevState.editType !== this.state.editType) && this.state.editType === 'name') {
+            await this.getSessions(format(this.state.date, 'YYYY-MM-DD'), 'allTime');
+        } else if ((prevState.editType !== this.state.editType) && this.state.editType === 'day') {
+            await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+        }
     }
 
     onClickHandler(e) {
@@ -57,36 +61,67 @@ export default class EditPage extends React.Component {
         }
     }
 
-    // async initStateFromServer() {
-    //     try {
-    //         return await getState();
-    //     } catch (err) {
-    //         this.setState(() => ({error: err.message}))
-    //     }
-    // }
-    // async postSession(sessionName, date, duration) {
-    //     try {
-    //         return await postSessions(sessionName, duration);
-    //     } catch (err) {
-    //         this.setState(() => ({error: err.message}))
-    //     }
-    // }
-    //
-    async getSessions(date = '2018-08-01') {
+    async getSessions(date, timePeriod = 'day') {
+        // if(timePeriod === ' day')
         try {
-            const sessions = await getSessions(date);
+            const sessions = await getSessions(date, timePeriod);
             this.setState(() => ({sessions}))
         } catch (err) {
             this.onErrorHandler(err.message);
         }
     }
 
+    async getUpdateSessions() {
+        await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+    }
+
     onErrorHandler(error) {
         this.setState(() => ({error}))
     }
 
-    onDateChangeHandler(date) {
+    //todo bulk rename of data doesnt work on json server
+    async renameOnClickHandler(value, id) {
+        if (this.state.editType === 'day') {
+            try {
+                await patchSessions(id, value);
+                await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+            } catch (err) {
+                this.onErrorHandler(err.message);
+            }
+        } else {
+            try {
+                await patchSessions(id, value);
+                await this.getSessions(format(this.state.date, 'YYYY-MM-DD'), 'allTime');
+            } catch (err) {
+                this.onErrorHandler(err.message);
+            }
+        }
+    }
+
+    //todo bulk delete of data doesnt work on json server
+    async deleteOnClickHandler(value, id) {
+        if (this.state.editType === 'day') {
+            try {
+                await deleteSessions(id, value);
+                await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+            } catch (err) {
+                this.onErrorHandler(err.message);
+            }
+        } else {
+            try {
+                await deleteSessions(id, value);
+                await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+            } catch (err) {
+                this.onErrorHandler(err.message);
+            }
+        }
+    }
+
+    async onDateChangeHandler(date) {
         this.setState(() => ({date}));
+        if (date !== null) {
+            await this.getSessions(format(date, 'YYYY-MM-DD'));
+        }
     }
 
     render() {
@@ -108,8 +143,6 @@ export default class EditPage extends React.Component {
                 </div>
                 {this.state.editType === 'day' &&
                 <DatePickerV1
-                    minDate={this.state.minDate}
-                    maxDate={this.state.maxDate}
                     onDateChange={this.onDateChangeHandler}
                     date={this.state.date}
                     today={true}
@@ -117,8 +150,10 @@ export default class EditPage extends React.Component {
                 />
                 }
                 <EditTable
+                    renameOnClick={this.renameOnClickHandler}
+                    deleteOnClick={this.deleteOnClickHandler}
                     onError={this.onErrorHandler}
-                    getSessions={this.getSessions}
+                    getSessions={this.getUpdateSessions}
                     type={this.state.editType}
                     sessions={this.state.sessions}/>
             </div>
