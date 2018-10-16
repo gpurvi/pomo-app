@@ -40,6 +40,7 @@ export const startTimer = ({timerEndAt, breakTimerEndAt, sessionName}) => {
         const modifiedSessionState = {
             ...sessionState,
             timerStarted: true,
+            breakTimerStarted: false,
             timerEndAt,
             breakTimerEndAt,
             sessionName
@@ -47,6 +48,7 @@ export const startTimer = ({timerEndAt, breakTimerEndAt, sessionName}) => {
         dispatch({
             type: 'START_TIMER',
             timerStarted: true,
+            breakTimerStarted: false,
             timerEndAt,
             breakTimerEndAt
         });
@@ -124,7 +126,8 @@ export const stopTimer = () => {
             timerPaused: false,
             timerEndAt: 0,
             timeLeft: 0,
-            breakTimerEndAt: 0
+            breakTimerEndAt: 0,
+            cycleCountRun: 0
         };
         localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
         dispatch({
@@ -152,7 +155,8 @@ export const startBreakTimer = ({breakTimerEndAt}) => {
             timerStarted: false,
             timerPaused: false,
             timeLeft,
-            breakTimerEndAt
+            breakTimerEndAt,
+            cycleCount : ++sessionState.cycleCountRun
         };
         localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
         dispatch({
@@ -181,8 +185,32 @@ export const changeName = (sessionName) => ({
     sessionName
 });
 
-//TICK
+//ERROR
 export const error = (error) => ({
     type: 'ERROR',
     error
 });
+
+//CHANGE_TIMER_SETTINGS
+export const changeTimerSettings = (setting) => {
+    return async (dispatch) => {
+        const sessionState = JSON.parse(localStorage.getItem('sessionState'));
+        const modifiedSessionState = {
+            ...sessionState,
+            ...setting
+        };
+        localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
+        dispatch({
+            type: 'CHANGE_TIMER_SETTINGS',
+            setting
+        });
+        try {
+            await putState(modifiedSessionState);
+        } catch (err) {
+            dispatch({
+                type: 'ERROR',
+                error: err.message
+            });
+        }
+    };
+};

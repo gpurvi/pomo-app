@@ -4,7 +4,7 @@ import Timer from "./../../components/TimerPage/Timer";
 import {
     tick,
     startBreakTimer,
-    stopTimer,
+    stopTimer, startTimer,
 } from "../../actions/timer";
 
 class TimerBlock extends React.Component {
@@ -13,6 +13,8 @@ class TimerBlock extends React.Component {
 
         this.onStopHandler = this.onStopHandler.bind(this);
         this.onTickHandler = this.onTickHandler.bind(this);
+        this.startTimer = this.startTimer.bind(this);
+
     }
 
     onStopHandler() {
@@ -20,6 +22,7 @@ class TimerBlock extends React.Component {
             //start break timer
             const breakTimerEndAt = this.props.breakDuration + new Date().valueOf();
             this.props.dispatch(startBreakTimer({breakTimerEndAt}));
+            // this.props.dispatch(increaseCycleCount());
             const duration = this.props.timerDuration;
             this.props.endTimer({
                 sessionName: this.props.sessionName,
@@ -27,8 +30,23 @@ class TimerBlock extends React.Component {
             });
         } else {
             // end break timer
-            this.props.dispatch(stopTimer());
+            if (this.props.runContinuously) {
+                this.startTimer();
+            } else {
+                if (this.props.cycleCountRun === this.props.cycleCount) {
+                    this.props.dispatch(stopTimer());
+                } else {
+                    this.startTimer();
+                }
+            }
         }
+    }
+
+    startTimer() {
+        const timerEndAt = this.props.timerDuration + new Date().valueOf();
+        const breakTimerEndAt = timerEndAt + this.props.breakDuration;
+        const sessionName = this.props.sessionName;
+        this.props.dispatch(startTimer({timerEndAt, breakTimerEndAt, sessionName}));
     }
 
     onTickHandler() {
@@ -44,6 +62,7 @@ class TimerBlock extends React.Component {
                 breakTimerStarted={this.props.breakTimerStarted}
                 timerStarted={this.props.timerStarted}
                 timerPaused={this.props.timerPaused}
+                runContinuously={this.props.runContinuously}
                 onTimerEndHandler={this.onStopHandler}
                 onTick={this.onTickHandler}
             />

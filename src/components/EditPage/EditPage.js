@@ -33,7 +33,9 @@ export default class EditPage extends React.Component {
     }
 
     async componentDidMount() {
-        await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+        // setTimeout( async () => {
+            await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+        // }, 1000);
     }
 
     async componentDidUpdate(prevProps, prevState) {

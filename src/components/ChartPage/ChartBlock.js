@@ -42,7 +42,10 @@ export default class ChartBlock extends React.Component {
         // isValid because it is possible to get invalid date from DatePicker
         if (isDate(nowDate)) {
             if (!isSameDate(prevDate, nowDate)) {
-                await this.getSessionData();
+                // setTimeout(async ()=>{
+                    await this.getSessionData();
+                // }, 1000);
+
             }
         }
     }

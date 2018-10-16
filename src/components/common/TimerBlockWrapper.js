@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import {postSessions} from "./apiCalls";
 import TimerBlock from "./../TimerPage/TimerBlock";
 
@@ -16,10 +15,10 @@ export default class TimerBlockWrapper extends React.Component {
     }
 
     async onStopTimerHandler({sessionName, duration}) {
-        await this.postSession(sessionName, moment().format('YYYY-MM-DD'), duration);
+        await this.postSession(sessionName, duration);
     }
 
-    async postSession(sessionName, date, duration) {
+    async postSession(sessionName, duration) {
         try {
             await postSessions(sessionName, duration);
         } catch (err) {

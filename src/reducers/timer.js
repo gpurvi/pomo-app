@@ -7,7 +7,10 @@ const timerReducerDefaultState = {
     timeLeft: 0,
     sessionName: "",
     timerEndAt: 0,
-    breakTimerEndAt: 0
+    breakTimerEndAt: 0,
+    runContinuously: false,
+    cycleCount: 1,
+    cycleCountRun: 0
 };
 
 export default (state = timerReducerDefaultState, action) => {
@@ -21,6 +24,7 @@ export default (state = timerReducerDefaultState, action) => {
             return {
                 ...state,
                 timerStarted: true,
+                breakTimerStarted: false,
                 timeLeft: state.timerDuration,
                 timerEndAt: action.timerEndAt,
                 breakTimerEndAt: action.breakTimerEndAt
@@ -45,7 +49,8 @@ export default (state = timerReducerDefaultState, action) => {
                 timerPaused: false,
                 timerEndAt: 0,
                 timeLeft: 0,
-                breakTimerEndAt: 0
+                breakTimerEndAt: 0,
+                cycleCountRun: 0
             };
         case 'START_BREAK_TIMER':
             return {
@@ -54,7 +59,8 @@ export default (state = timerReducerDefaultState, action) => {
                 timerStarted: false,
                 timerPaused: false,
                 timeLeft: state.breakDuration,
-                breakTimerEndAt: action.breakTimerEndAt
+                breakTimerEndAt: action.breakTimerEndAt,
+                cycleCountRun: ++state.cycleCountRun
             };
         case 'TICK':
             return {
@@ -65,6 +71,11 @@ export default (state = timerReducerDefaultState, action) => {
             return {
                 ...state,
                 sessionName: action.sessionName
+            };
+        case 'CHANGE_TIMER_SETTINGS':
+            return {
+                ...state,
+                ...action.setting
             };
         case 'ERROR':
             return {

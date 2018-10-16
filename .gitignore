@@ -22,6 +22,7 @@
 /src/playground
 db.json
 todo.txt
+/old
 
 
 npm-debug.log*
