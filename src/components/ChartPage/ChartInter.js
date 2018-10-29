@@ -39,19 +39,23 @@ export default class ChartInter extends React.Component {
             date = isDate(propsDate) ? format(propsDate, 'YYYY') : '';
         }
         return (
-            <div>
-                <ChartHeader header={this.props.header} date={date}/>
-                <Chart
-                    sessionsLabel={this.props.sessionsLabel}
-                    durationsLabel={this.props.durationsLabel}
-                    type={this.props.type}
-                    fetchedDate={this.props.fetchedDate}
-                    sessions={this.props.sessions}
-                    labels={this.props.labels}
-                    durations={this.props.durations}
-                    showSessions={this.state.showSessions}
-                    showDurations={this.state.showDurations}
-                />
+            <div className='container mt-5 mb-5'>
+                <div className='text-center'>
+                    <ChartHeader header={this.props.header} date={date}/>
+                </div>
+                <div className='mt-2'>
+                    <Chart
+                        sessionsLabel={this.props.sessionsLabel}
+                        durationsLabel={this.props.durationsLabel}
+                        type={this.props.type}
+                        fetchedDate={this.props.fetchedDate}
+                        sessions={this.props.sessions}
+                        labels={this.props.labels}
+                        durations={this.props.durations}
+                        showSessions={this.state.showSessions}
+                        showDurations={this.state.showDurations}
+                    />
+                </div>
                 <ChartButtons
                     maxDetail={maxDetail}
                     minDate={this.props.minDate}

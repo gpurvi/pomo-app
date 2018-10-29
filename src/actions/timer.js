@@ -156,7 +156,7 @@ export const startBreakTimer = ({breakTimerEndAt}) => {
             timerPaused: false,
             timeLeft,
             breakTimerEndAt,
-            cycleCount : ++sessionState.cycleCountRun
+            cycleCountRun: ++sessionState.cycleCountRun
         };
         localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
         dispatch({
@@ -179,11 +179,20 @@ export const tick = () => ({
     type: 'TICK'
 });
 
+//todo save changes to name on server
 //CHANGE_NAME
-export const changeName = (sessionName) => ({
-    type: 'CHANGE_NAME',
-    sessionName
-});
+export const changeName = (sessionName) => {
+    const sessionState = JSON.parse(localStorage.getItem('sessionState'));
+    const modifiedSessionState = {
+        ...sessionState,
+        sessionName
+    };
+    localStorage.setItem('sessionState', JSON.stringify(modifiedSessionState));
+    return {
+        type: 'CHANGE_NAME',
+        sessionName
+    }
+};
 
 //ERROR
 export const error = (error) => ({

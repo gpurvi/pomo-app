@@ -1,19 +1,29 @@
 import React from 'react';
-import StartPauseGreyButton from "./StartPauseGreyButton";
+import {faPlay, faPause} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import '../../styles/components/TimerButton.css';
 
-const StartPauseButton = ({startPauseClickHandler, timerRunning, breakTimerStarted}) => (
-    <i onClick={startPauseClickHandler}>
-        {!timerRunning ? (
-            // play
-            <StartPauseGreyButton
-                breakTimerStarted={breakTimerStarted}
-                startPauseClickHandler={startPauseClickHandler}/>
+const StartPauseButton = ({startPauseClickHandler, timerStarted, breakTimerStarted}) => (
+
+    <i
+        onClick={startPauseClickHandler}
+        className='d-inline-block mr-3 mr-lg-4'
+    >
+        {!timerStarted ? (
+            breakTimerStarted ? (
+                // grey play button
+                <FontAwesomeIcon
+                    size='5x'
+                    className='timer-button--grey'
+                    icon={faPlay}
+                />
+            ) : (
+                //normal play button
+                <FontAwesomeIcon size='5x' icon={faPlay}/>
+            )
         ) : (
             // pause
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                <path d="M0 0h24v24H0z" fill="none"/>
-            </svg>
+            <FontAwesomeIcon size='5x' icon={faPause}/>
         )}
     </i>
 );

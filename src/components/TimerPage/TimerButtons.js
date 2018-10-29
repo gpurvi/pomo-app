@@ -1,22 +1,15 @@
 import React from "react";
 import {connect} from 'react-redux';
-import Dropdown from '../../components/common/Dropdown';
 import StartPauseButton from "../buttons/StartPauseButton";
 import StopButton from "../buttons/StopButton";
-import {changeName, pauseTimer, resumeTimer, startTimer, stopTimer} from "../../actions/timer";
+import {pauseTimer, resumeTimer, startTimer, stopTimer} from "../../actions/timer";
 
 class TimerButtons extends React.Component {
     constructor(props) {
         super(props);
 
         this.startPauseClickHandler = this.startPauseClickHandler.bind(this);
-        this.onChangeHandler = this.onChangeHandler.bind(this);
         this.onStopHandler = this.onStopHandler.bind(this);
-    }
-
-    onChangeHandler(e) {
-        const sessionName = e.target.value;
-        this.props.dispatch(changeName(sessionName));
     }
 
     onStopHandler(e) {
@@ -61,26 +54,19 @@ class TimerButtons extends React.Component {
     }
 
     render() {
-        const timerRunning = (this.props.timerStarted && !this.props.timerPaused);
-        const timerStarted = this.props.timerStarted || this.props.breakTimerStarted;
+        const sessionTimerStarted = (this.props.timerStarted && !this.props.timerPaused);
+        const timerRunning = this.props.timerStarted || this.props.breakTimerStarted;
         return (
-            <div>
-                <Dropdown
-                    timerStarted={timerStarted}
-                    onChangeHandler={this.onChangeHandler}
-                    sessionName={this.props.sessionName}
+            <div className='text-center mt-3'>
+                <StartPauseButton
+                    breakTimerStarted={this.props.breakTimerStarted}
+                    startPauseClickHandler={this.startPauseClickHandler}
+                    timerStarted={sessionTimerStarted}
                 />
-                <div>
-                    <StartPauseButton
-                        breakTimerStarted={this.props.breakTimerStarted}
-                        startPauseClickHandler={this.startPauseClickHandler}
-                        timerRunning={timerRunning}
-                    />
-                    <StopButton
-                        onStopHandler={this.onStopHandler}
-                        timerStarted={timerStarted}
-                    />
-                </div>
+                <StopButton
+                    onStopHandler={this.onStopHandler}
+                    timerRunning={timerRunning}
+                />
             </div>
         );
     }

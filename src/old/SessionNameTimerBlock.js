@@ -1,6 +1,6 @@
 import React from 'react';
 import Timer from "../components/TimerPage/Timer";
-import {SessionName} from "../components/TimerPage/SessionName";
+import {SessionName} from "./SessionName";
 import StartPauseButton from "../components/buttons/StartPauseButton";
 import StopButton from "../components/buttons/StopButton";
 

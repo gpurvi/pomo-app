@@ -1,13 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {changeTimerSettings} from "../../actions/timer";
-import SettingInput from "./SettingInput";
+import SettingInputBlock from "./SettingInputBlock";
 
-class DurationBlock extends React.Component {
+class DurationSettings extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.onBlurHandler = this.onBlurHandler.bind(this);
     }
 
@@ -23,7 +22,6 @@ class DurationBlock extends React.Component {
                 'breakDuration': this.convertTo(duration, 'toMilis')
             }));
         }
-
     }
 
     convertTo(amount, type) {
@@ -38,27 +36,27 @@ class DurationBlock extends React.Component {
         const convertedTimer = this.convertTo(this.props.timerDuration, 'toMin');
         const convertedBreak = this.convertTo(this.props.breakDuration, 'toMin');
         return (
+
             <div>
-                <SettingInput
+                <h4>Durations</h4>
+                <SettingInputBlock
+                    maxValue={360}
+                    id='sessionDuration'
                     value={convertedTimer}
                     addBlock={this.props.addBlock}
                     removeBlock={this.props.removeBlock}
                     onBlur={this.onBlurHandler}
-                    stateVar='timerDuration'
-                    label='Session duration'
                     name='session'
                 />
-
-                <SettingInput
+                <SettingInputBlock
+                    maxValue={360}
+                    id='breakDuration'
                     value={convertedBreak}
                     addBlock={this.props.addBlock}
                     removeBlock={this.props.removeBlock}
                     onBlur={this.onBlurHandler}
-                    stateVar='breakDuration'
-                    label='Break duration'
                     name='break'
                 />
-
             </div>
         );
     }
@@ -68,4 +66,4 @@ const mapStateToProps = (state) => ({
     ...state
 });
 
-export default connect(mapStateToProps)(DurationBlock);
+export default connect(mapStateToProps)(DurationSettings);

@@ -4,19 +4,21 @@ import normalizeDuration from './../../utils/normalizeDuration';
 
 const EditTable = ({sessions, type, deleteOnClick, onError, renameOnClick}) => {
     return (
-        <div>
-            {sessions.length !== 0 ? (
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>{type === 'day' ? 'End at' : 'Total count'}</th>
-                        <th>{type === 'day' ? 'Duration' : 'Total duration'}</th>
-                        <th colSpan={2}>Modify</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {sessions.map(({sessionName, duration, id, createdAt = '12:10:55', count = 0}, index) =>
+        <div className='mt-6'>
+
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>{type === 'day' ? 'End at' : 'Total count'}</th>
+                    <th>{type === 'day' ? 'Duration' : 'Total duration'}</th>
+                    <th colSpan={2} className='text-center'>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {sessions.length !== 0 ? (
+                    sessions.map(({sessionName, duration, id, createdAt = '12:10:55', count = 0}, index) =>
                         <EditRow
                             deleteOnClick={deleteOnClick}
                             renameOnClick={renameOnClick}
@@ -26,12 +28,16 @@ const EditTable = ({sessions, type, deleteOnClick, onError, renameOnClick}) => {
                             firstCol={sessionName}
                             secCol={type === 'day' ? createdAt : count}
                             thirdCol={normalizeDuration(duration)}/>
-                    )}
-                    </tbody>
-                </table>
-            ) : (
-                <h1>No data for this date</h1>
-            )}
+                    )
+                ) : (
+                    <tr>
+                        <td colSpan={5} className='no-sessions text-center'>
+                            No sessions for this date
+                        </td>
+                    </tr>
+                )}
+                </tbody>
+            </table>
         </div>
     );
 };

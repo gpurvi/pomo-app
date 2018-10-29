@@ -5,6 +5,7 @@ import format from 'date-fns/format';
 import {getSessions, postSessions} from "../common/apiCalls";
 import TimerBlock from "./TimerBlock";
 import TimerButtons from "./TimerButtons";
+import DropdownV1 from "../common/DropdownV1";
 
 export default class TimerPage extends React.Component {
 
@@ -59,13 +60,24 @@ export default class TimerPage extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className='container mt-4'>
+                <div className="row justify-content-center">
+                    <div className='col-md-8 col-lg-6'>
+                        <DropdownV1/>
+                    </div>
+                </div>
                 <TimerBlock endTimer={this.onStopTimerHandler}/>
                 <TimerButtons endTimer={this.onStopTimerHandler}/>
-                <DateSessions
-                    date={this.state.date}
-                    sessions={this.state.sessions}
-                    onDateChange={this.onDateChangeHandler}/>
+                <hr className='mt-5 border-dark'/>
+                <div className="row justify-content-center">
+                    <div className="col-md-8">
+                        <DateSessions
+                            date={this.state.date}
+                            sessions={this.state.sessions}
+                            onDateChange={this.onDateChangeHandler}/>
+                    </div>
+                </div>
+
             </div>
         );
     }

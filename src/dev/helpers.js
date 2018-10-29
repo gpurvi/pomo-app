@@ -3,7 +3,7 @@ import addDays from 'date-fns/add_days';
 import format from 'date-fns/format';
 import {reduceSessionsByTimePeriod} from "../utils/reduceSessions";
 
-export const reduceNames = (sessions, returnCount) => {
+export const reduceNames = (sessions) => {
     return sessions.reduce(function (ar, item) {
         let {sessionName} = item;
         const _item = ar.filter(function (a) {
@@ -16,7 +16,8 @@ export const reduceNames = (sessions, returnCount) => {
         } else {
             ar.push(sessionName);
         }
-        return ar.slice(-returnCount);
+        // return ar.slice(-returnCount);
+        return ar;
     }, []);
 };
 

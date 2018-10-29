@@ -1,5 +1,7 @@
 import React from 'react';
 import {withModal} from "../common/Modal";
+import {Button, ModalHeader, ModalBody, ModalFooter, Input} from 'reactstrap';
+
 
 export class Rename extends React.Component {
     constructor(props) {
@@ -9,8 +11,15 @@ export class Rename extends React.Component {
             value: this.props.initValue
         };
 
+        this.ref = React.createRef();
+
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.onClickHandler = this.onClickHandler.bind(this);
+    }
+
+    //this is hack to get input always focused
+    componentDidUpdate() {
+        this.ref.current.focus();
     }
 
     onChangeHandler(e) {
@@ -21,24 +30,31 @@ export class Rename extends React.Component {
     async onClickHandler(e) {
         e.preventDefault();
         this.props.renameOnClick(this.state.value, this.props.id);
-        this.props.closeModal();
+        this.props.toggle();
     }
 
     render() {
+        const {modalName} = this.props;
         return (
-            <form>
-                <h3>Rename</h3>
-                <input
-                    autoFocus
-                    type="text"
-                    onChange={this.onChangeHandler}
-                    value={this.state.value}
-                />
-                <button onClick={this.onClickHandler}>Save</button>
-                <button onClick={this.props.closeModal}>Cancel</button>
-            </form>
+            <React.Fragment>
+                <ModalHeader toggle={this.props.toggle}>{modalName}</ModalHeader>
+                <ModalBody>
+                    <Input
+                        innerRef={this.ref}
+                        type="text"
+                        onChange={this.onChangeHandler}
+                        value={this.state.value}
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={this.onClickHandler}>Save</Button>
+                    <Button color="secondary" onClick={this.props.toggle}>Cancel</Button>
+                </ModalFooter>
+            </React.Fragment>
+
         );
     }
 }
 
 export default withModal(Rename);
+

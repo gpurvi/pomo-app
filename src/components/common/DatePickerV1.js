@@ -138,8 +138,7 @@ export default class DatePickerV1 extends React.Component {
 
     render() {
         return (
-            <div>
-
+            <React.Fragment>
                 <DatePicker
                     minDate={this.state.minDate}
                     maxDate={this.maxDate}
@@ -147,26 +146,31 @@ export default class DatePickerV1 extends React.Component {
                     onChange={this.onDateChange}
                     value={this.props.date}
                 />
-                <SimpleButton
-                    disabled={this.state.prevDisabled}
-                    dataAttr="prev"
-                    onClick={this.onDateChange}
-                    text='prev'
-                />
-                <SimpleButton
-                    disabled={this.state.nextDisabled}
-                    dataAttr="next"
-                    onClick={this.onDateChange}
-                    text='next'
-                />
-                {this.props.today &&
-                <SimpleButton
-                    disabled={this.state.todayDisabled}
-                    onClick={this.onDateChange}
-                    text='today'
-                    dataAttr="today"/>
-                }
-            </div>
+                <div
+                    className='btn-group ml-1'
+                    role='group'
+                >
+                    <SimpleButton
+                        disabled={this.state.prevDisabled}
+                        dataAttr="prev"
+                        onClick={this.onDateChange}
+                        text='prev'
+                    />
+                    <SimpleButton
+                        disabled={this.state.nextDisabled}
+                        dataAttr="next"
+                        onClick={this.onDateChange}
+                        text='next'
+                    />
+                    {this.props.today &&
+                    <SimpleButton
+                        disabled={this.state.todayDisabled}
+                        onClick={this.onDateChange}
+                        text='today'
+                        dataAttr="today"/>
+                    }
+                </div>
+            </React.Fragment>
         )
     }
 }

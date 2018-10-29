@@ -10,9 +10,6 @@ export default class EditPage extends React.Component {
 
     constructor(props) {
         super(props);
-
-        // this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
-        // this.onStopTimerHandler = this.onStopTimerHandler.bind(this);
         this.getSessions = this.getSessions.bind(this);
         this.onClickHandler = this.onClickHandler.bind(this);
         this.onDateChangeHandler = this.onDateChangeHandler.bind(this);
@@ -20,8 +17,7 @@ export default class EditPage extends React.Component {
         this.getUpdateSessions = this.getUpdateSessions.bind(this);
         this.renameOnClickHandler = this.renameOnClickHandler.bind(this);
         this.deleteOnClickHandler = this.deleteOnClickHandler.bind(this);
-        // this.initStateFromServer = this.initStateFromServer.bind(this);
-        // this.postSession = this.postSession.bind(this);
+
         this.state = {
             date: new Date(),
             editType: 'day',
@@ -32,9 +28,10 @@ export default class EditPage extends React.Component {
         };
     }
 
+
     async componentDidMount() {
         // setTimeout( async () => {
-            await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
+        await this.getSessions(format(this.state.date, 'YYYY-MM-DD'));
         // }, 1000);
     }
 
@@ -126,38 +123,57 @@ export default class EditPage extends React.Component {
         }
     }
 
+    toggle() {
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+
     render() {
         return (
-            <div>
-                <div>
-                    <SimpleButton
-                        disabled={this.state.dayDisabled}
-                        text="Edit sessions"
-                        dataAttr="day"
-                        onClick={this.onClickHandler}
-                    />
-                    <SimpleButton
-                        disabled={this.state.nameDisabled}
-                        text="Edit session names"
-                        dataAttr="name"
-                        onClick={this.onClickHandler}
-                    />
+            <div className='container mt-6 pt-3'>
+                <div className='row'>
+                    <div className="col-6 text-center">
+                        <SimpleButton
+                            disabled={this.state.dayDisabled}
+                            text="Edit sessions"
+                            dataAttr="day"
+                            onClick={this.onClickHandler}
+                        />
+                    </div>
+                    <div className="col-6 text-center">
+                        <SimpleButton
+                            disabled={this.state.nameDisabled}
+                            text="Edit session names"
+                            dataAttr="name"
+                            onClick={this.onClickHandler}
+                        />
+                    </div>
                 </div>
-                {this.state.editType === 'day' &&
-                <DatePickerV1
-                    onDateChange={this.onDateChangeHandler}
-                    date={this.state.date}
-                    today={true}
-                    maxDetail='month'
-                />
-                }
-                <EditTable
-                    renameOnClick={this.renameOnClickHandler}
-                    deleteOnClick={this.deleteOnClickHandler}
-                    onError={this.onErrorHandler}
-                    getSessions={this.getUpdateSessions}
-                    type={this.state.editType}
-                    sessions={this.state.sessions}/>
+
+                <div className='col-12'>
+
+                    {this.state.editType === 'day' &&
+                    <div className='text-center mt-6'>
+                        <DatePickerV1
+                            onDateChange={this.onDateChangeHandler}
+                            date={this.state.date}
+                            today={true}
+                            maxDetail='month'
+                        />
+                    </div>
+                    }
+
+                    <EditTable
+                        renameOnClick={this.renameOnClickHandler}
+                        deleteOnClick={this.deleteOnClickHandler}
+                        onError={this.onErrorHandler}
+                        getSessions={this.getUpdateSessions}
+                        type={this.state.editType}
+                        sessions={this.state.sessions}/>
+                </div>
+
+
             </div>
         );
     }

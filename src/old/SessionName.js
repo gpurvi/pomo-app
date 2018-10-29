@@ -1,8 +1,8 @@
 import React from 'react';
-import Dropdown from 'react-dropdown'
+
 import 'react-dropdown/style.css'
 
-import './../../styles/components/SessionName.css';
+import '../styles/components/SessionName.css';
 
 //todo implement dropdown for most used names
 class SessionName extends React.Component {

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Input} from 'reactstrap';
 
 class SettingInput extends React.Component {
 
@@ -6,8 +7,8 @@ class SettingInput extends React.Component {
         super(props);
         this.state = {
             value: this.props.value,
-            error: '',
-            block: false
+            block: false,
+            invalid: false
         };
 
         this.onChangeHandler = this.onChangeHandler.bind(this);
@@ -19,9 +20,10 @@ class SettingInput extends React.Component {
         const regex = /^\s|^0|\D/;
         if (!regex.test(value)) {
             this.setState(() => ({
-                error: '',
-                value
+                value,
+                invalid: false
             }));
+            this.props.invalid(false);
             if (this.state.block) {
                 this.props.removeBlock();
                 this.setState(() => ({
@@ -33,12 +35,10 @@ class SettingInput extends React.Component {
 
     onBlurHandler(e) {
         const {value} = e.target;
-        if (value === '') {
-            this.setState(() => ({
-                error: `Invalid value. Must be number from  1 - 360. 
-            Changes won't be saved.`
-            }));
-
+        const numberValue = (Number.parseInt(value, 10));
+        if (value === '' || numberValue > this.props.maxValue) {
+            this.setState(() => ({invalid: true}));
+            this.props.invalid(true);
             if (!this.state.block) {
                 this.props.addBlock();
                 this.setState(() => ({
@@ -46,32 +46,24 @@ class SettingInput extends React.Component {
                 }));
             }
         } else {
-            this.props.onBlur(e, Number.parseInt(value, 10));
+            this.props.onBlur(e, numberValue);
         }
     }
 
     render() {
+        const {id, disabled, name} = this.props;
+        const {value, invalid} = this.state;
         return (
-            <div>
-                <label
-                    // className={this.props.disabled && 'disabled-label'}
-                >
-                    {this.props.label}
-                    <input
-                        disabled={this.props.disabled}
-                        name={this.props.name}
-                        onBlur={this.onBlurHandler}
-                        type='text'
-                        onChange={this.onChangeHandler}
-                        value={this.state.value}
-                    />
-                </label>
-                {
-                    this.state.error &&
-                    <p>{this.state.error}</p>
-                }
-            </div>
-
+            <Input
+                disabled={disabled}
+                id={id}
+                onChange={this.onChangeHandler}
+                onBlur={this.onBlurHandler}
+                name={name}
+                value={value}
+                invalid={invalid}
+                type='text'
+            />
         );
     }
 }

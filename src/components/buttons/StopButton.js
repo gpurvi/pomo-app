@@ -1,19 +1,23 @@
 import React from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faStop} from '@fortawesome/free-solid-svg-icons';
+import '../../styles/components/TimerButton.css';
 
 const StopButton = (props) => (
-    <i onClick={props.onStopHandler}>
-        {props.timerStarted ? (
+    <i
+        onClick={props.onStopHandler}
+        className='d-inline-block ml-3 ml-lg-4'
+    >
+        {props.timerRunning ? (
             // started
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
-                <path d="M0 0h24v24H0z" fill="none"/>
-                <path d="M6 6h12v12H6z"/>
-            </svg>
+            <FontAwesomeIcon size='5x' icon={faStop}/>
         ) : (
             // stopped
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
-                <path d="M0 0h24v24H0z" fill="none"/>
-                <path d="M6 6h12v12H6z" fill="grey"/>
-            </svg>
+            <FontAwesomeIcon
+                icon={faStop}
+                size='5x'
+                className='timer-button--grey'
+            />
         )}
     </i>
 );

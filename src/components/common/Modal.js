@@ -1,7 +1,5 @@
 import React from 'react';
-import ReactModal from 'react-modal';
-
-ReactModal.setAppElement(document.querySelector('#root'));
+import {Button, Modal} from 'reactstrap';
 
 export const withModal = (WrappedComponent) => {
     return class extends React.Component {
@@ -9,36 +7,39 @@ export const withModal = (WrappedComponent) => {
         constructor(props) {
             super(props);
             this.state = {
-                modalIsOpen: false
+                modal: false
             };
-            this.openModal = this.openModal.bind(this);
-            this.closeModal = this.closeModal.bind(this);
+
+            this.toggle = this.toggle.bind(this);
         }
 
-        openModal() {
-            this.setState({modalIsOpen: true});
-        }
-
-        closeModal() {
-            this.setState({modalIsOpen: false});
+        toggle() {
+            this.setState({
+                modal: !this.state.modal
+            });
         }
 
         render() {
             return (
                 <div>
-                    <button onClick={this.openModal}>{this.props.modalName}</button>
-                    <ReactModal
-                        isOpen={this.state.modalIsOpen}
-                        onRequestClose={this.closeModal}
-                        contentLabel="Example Modal"
+                    <Button
+                        color="secondary"
+                        size='sm'
+                        onClick={this.toggle}
+                    >
+                        {this.props.modalName}
+                    </Button>
+                    <Modal
+                        isOpen={this.state.modal}
+                        toggle={this.toggle}
+                        className={this.props.className}
                     >
                         <WrappedComponent
-                            closeModal={this.closeModal}
+                            toggle={this.toggle}
                             {...this.props}/>
-                    </ReactModal>
+                    </Modal>
                 </div>
             );
         }
     }
 };
-

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 import {withModal} from "../common/Modal";
 
 export class Delete extends React.Component {
@@ -11,17 +12,21 @@ export class Delete extends React.Component {
     async onClickHandler(e) {
         e.preventDefault();
         this.props.deleteOnClick(this.props.initValue, this.props.id);
-        this.props.closeModal();
+        this.props.toggle();
     }
 
     render() {
         return (
-            <div>
-                <h2>Delete</h2>
-                <p>Delete session {this.props.initValue}</p>
-                <button onClick={this.onClickHandler}>Delete</button>
-                <button onClick={this.props.closeModal}>Cancel</button>
-            </div>
+            <React.Fragment>
+                <ModalHeader toggle={this.props.toggle}>Delete</ModalHeader>
+                <ModalBody>
+                    Delete session: <span className='font-weight-bold'>{this.props.initValue}</span>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="danger" onClick={this.onClickHandler}>Delete</Button>
+                    <Button color="secondary" onClick={this.props.toggle}>Cancel</Button>
+                </ModalFooter>
+            </React.Fragment>
         );
     }
 }

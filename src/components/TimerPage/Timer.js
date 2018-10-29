@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import format from 'date-fns/format';
 import {Howl} from 'howler';
 import formatDateUTC from "../../utils/formatDateUTC";
 
@@ -91,8 +90,11 @@ export default class Timer extends Component {
 
     render() {
         return (
-            <div>
-                <h1>{formatDateUTC(this.props.displayTime)}</h1>
+            <div className='mt-5'>
+                <h1
+                    className='my-0 display-3 text-center'>
+                    {formatDateUTC(this.props.displayTime)}
+                </h1>
             </div>
         );
     }

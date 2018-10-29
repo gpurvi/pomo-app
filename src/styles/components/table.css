@@ -1,0 +1,8 @@
+.table-tfoot {
+    font-weight: bold;
+    border-top: 2px solid #dee2e6;
+}
+
+.no-sessions {
+    color: #99979c;
+}

@@ -1,13 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import {Prompt} from "react-router-dom";
-// import {Setting} from "./Setting";
-// import SettingText from "./SettingText";
-// import {changeTimerSettings} from "../../actions/timer";
-// import SettingInput from "./SettingInput";
-// // import SettingCheck from "./SettingCheck";
 import RunSettings from "./RunSettings";
-import DurationBlock from "./DurationBlock";
+import DurationSettings from "./DurationSettings";
 
 class SettingsPage extends React.Component {
 
@@ -53,7 +47,7 @@ class SettingsPage extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className='container mt-6 pt-3'>
                 <Prompt
                     when={this.state.isBlocking > 0}
                     message={location =>
@@ -61,11 +55,14 @@ class SettingsPage extends React.Component {
                     }
                 />
 
-                <DurationBlock
+                <DurationSettings
                     addBlock={this.addBlock}
                     removeBlock={this.removeBlock}
                 />
 
+                <div className="col-12">
+                    <hr/>
+                </div>
 
                 <RunSettings
                     addBlock={this.addBlock}
@@ -77,8 +74,6 @@ class SettingsPage extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-    ...state
-});
 
-export default connect(mapStateToProps)(SettingsPage);
+
+export default SettingsPage;

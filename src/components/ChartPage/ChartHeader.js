@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ChartHeader = ({header, date}) => (
-    <h1>{`${header} in ${date}`}</h1>
+    <h3>{`${header} in ${date ? date : '...' }`}</h3>
 );
 
 export default ChartHeader;

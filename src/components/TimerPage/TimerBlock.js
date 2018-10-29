@@ -62,7 +62,6 @@ class TimerBlock extends React.Component {
                 breakTimerStarted={this.props.breakTimerStarted}
                 timerStarted={this.props.timerStarted}
                 timerPaused={this.props.timerPaused}
-                runContinuously={this.props.runContinuously}
                 onTimerEndHandler={this.onStopHandler}
                 onTick={this.onTickHandler}
             />

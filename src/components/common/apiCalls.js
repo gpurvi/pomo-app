@@ -2,6 +2,7 @@ import format from 'date-fns/format';
 import url from '../urls';
 import {reduceNames} from "../../dev/helpers";
 import {reduceSessions, reduceSessionsByTimePeriod} from "../../utils/reduceSessions";
+import starwarsName from 'startwars-names';
 
 const env = 'dev';
 const urls = url(env);
@@ -186,7 +187,7 @@ export const getTotal = async () => {
 };
 
 //get last five used session names
-export const getNames = async (count) => {
+export const getNames = async () => {
     //development server url
     if (env === 'dev') {
         const response = await fetch(urls.names);
@@ -195,7 +196,7 @@ export const getNames = async (count) => {
         } else {
             const names = await response.json();
             //helper function to imitate data returned from server
-            return reduceNames(names, count);
+            return reduceNames(names);
         }
     }
 };
