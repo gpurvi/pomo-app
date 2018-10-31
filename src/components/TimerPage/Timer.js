@@ -90,12 +90,18 @@ export default class Timer extends Component {
 
     render() {
         return (
-            <div className='mt-5'>
-                <h1
-                    className='my-0 display-3 text-center'>
-                    {formatDateUTC(this.props.displayTime)}
-                </h1>
-            </div>
+            <React.Fragment>
+                {this.props.small ? (
+                    formatDateUTC(this.props.displayTime)
+                ) : (
+                    <div className='mt-5'>
+                        <h1
+                            className='my-0 display-3 text-center'>
+                            {formatDateUTC(this.props.displayTime)}
+                        </h1>
+                    </div>
+                )}
+            </React.Fragment>
         );
     }
 }

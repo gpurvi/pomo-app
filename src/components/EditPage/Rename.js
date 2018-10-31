@@ -1,5 +1,5 @@
 import React from 'react';
-import {withModal} from "../common/Modal";
+import {withModal} from "../common/withModal";
 import {Button, ModalHeader, ModalBody, ModalFooter, Input} from 'reactstrap';
 
 

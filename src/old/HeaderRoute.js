@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
-import Header from './Header';
-import TimerRoute from "../../routers/TimerRoute";
+import Header from '../components/common/Header';
+import TimerRoute from "./NavTimer";
 
 const HeaderRoute = ({match}) => {
     console.log(match.path);

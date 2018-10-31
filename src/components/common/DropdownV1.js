@@ -110,7 +110,7 @@ class DropdownV1 extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    ...state
+    ...state.timer
 });
 
 export default connect(mapStateToProps)(DropdownV1);

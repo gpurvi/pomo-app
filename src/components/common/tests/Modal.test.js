@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import {withModal} from '../Modal';
+import {withModal} from '../withModal';
 
 it('renders correctly', () => {
     const Component = () => <div/>;

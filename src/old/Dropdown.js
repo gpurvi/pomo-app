@@ -1,6 +1,6 @@
 import React from 'react';
 // import {connect} from 'react-redux'
-import './../../styles/components/SessionName.css';
+import '../styles/components/SessionName.css';
 import {getNames} from "./apiCalls";
 
 class Dropdown extends React.Component {

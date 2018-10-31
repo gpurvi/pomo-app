@@ -1,6 +1,6 @@
 import React from 'react';
-import {postSessions} from "./apiCalls";
-import TimerBlock from "./../TimerPage/TimerBlock";
+import {postSessions} from "../components/common/apiCalls";
+import TimerBlock from "../components/TimerPage/TimerBlock";
 
 export default class TimerBlockWrapper extends React.Component {
 
@@ -29,7 +29,10 @@ export default class TimerBlockWrapper extends React.Component {
     render() {
         return (
             <div>
-                <TimerBlock endTimer={this.onStopTimerHandler}/>
+                <TimerBlock
+                    small={this.props.small}
+                    endTimer={this.onStopTimerHandler}
+                />
             </div>
         );
     }

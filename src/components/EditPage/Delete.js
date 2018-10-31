@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-import {withModal} from "../common/Modal";
+import {withModal} from "../common/withModal";
 
 export class Delete extends React.Component {
     constructor(props) {

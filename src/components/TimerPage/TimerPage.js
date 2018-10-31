@@ -66,7 +66,7 @@ export default class TimerPage extends React.Component {
                         <DropdownV1/>
                     </div>
                 </div>
-                <TimerBlock endTimer={this.onStopTimerHandler}/>
+                <TimerBlock small={false} endTimer={this.onStopTimerHandler}/>
                 <TimerButtons endTimer={this.onStopTimerHandler}/>
                 <hr className='mt-5 border-dark'/>
                 <div className="row justify-content-center">

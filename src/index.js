@@ -4,9 +4,11 @@ import {Provider} from 'react-redux';
 import configureStore from './store/configureStore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/components/modal.css';
-// import './index.css';
+// import './styles/components/login-page.css';
+// import './styles/components/sign-page.css';
 import AppRouter from './routers/AppRouters';
 import {initApp} from "./actions/timer";
+import {login} from "./actions/auth";
 
 // import Dropdown from "./components/common/Dropdown";
 // import DropdownV1 from "./components/common/DropdownV1";
@@ -21,6 +23,10 @@ import {initApp} from "./actions/timer";
 // getAppState().then((data)=> console.log(data));
 
 const store = configureStore();
+
+if (JSON.parse(localStorage.getItem('auth')) === true) {
+    store.dispatch(login());
+}
 
 const jsx = (
     <Provider store={store}>

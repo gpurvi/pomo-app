@@ -22,7 +22,6 @@ class TimerBlock extends React.Component {
             //start break timer
             const breakTimerEndAt = this.props.breakDuration + new Date().valueOf();
             this.props.dispatch(startBreakTimer({breakTimerEndAt}));
-            // this.props.dispatch(increaseCycleCount());
             const duration = this.props.timerDuration;
             this.props.endTimer({
                 sessionName: this.props.sessionName,
@@ -58,6 +57,7 @@ class TimerBlock extends React.Component {
             this.props.timeLeft : this.props.timerDuration;
         return (
             <Timer
+                small={this.props.small}
                 displayTime={displayTime}
                 breakTimerStarted={this.props.breakTimerStarted}
                 timerStarted={this.props.timerStarted}
@@ -70,7 +70,7 @@ class TimerBlock extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    ...state
+    ...state.timer
 });
 
 export default connect(mapStateToProps)(TimerBlock);

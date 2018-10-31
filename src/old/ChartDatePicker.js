@@ -1,6 +1,6 @@
 import React from "react";
 import DatePicker from "react-date-picker";
-import SimpleButton from "../buttons/SimpleButton";
+import SimpleButton from "../components/buttons/SimpleButton";
 
 const ChartDatePicker = (props) => {
     return (

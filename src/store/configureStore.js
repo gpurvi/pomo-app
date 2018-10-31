@@ -1,15 +1,17 @@
-import {createStore, applyMiddleware} from "redux";
+import {createStore, combineReducers, applyMiddleware} from "redux";
 import thunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import timerReducer from '../reducers/timer';
+import authReducer from "../reducers/auth";
 // import
-
-
 
 
 export default () => {
     return createStore(
-        timerReducer,
+        combineReducers({
+            timer: timerReducer,
+            auth: authReducer
+        }),
         composeWithDevTools(applyMiddleware(thunk))
     )
 };

@@ -63,7 +63,7 @@ class DurationSettings extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    ...state
+    ...state.timer
 });
 
 export default connect(mapStateToProps)(DurationSettings);

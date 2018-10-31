@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from "react-redux";
 import {NavLink} from 'react-router-dom';
 import {
     Collapse,
@@ -7,13 +8,15 @@ import {
     Nav,
     NavItem,
 } from 'reactstrap';
+import NavTimerV1 from "./NavTimerV1";
+import {logout} from "../../actions/auth";
 
-
-export default class Header extends React.Component {
+class Header extends React.Component {
     constructor(props) {
         super(props);
 
         this.toggle = this.toggle.bind(this);
+        this.onLogout = this.onLogout.bind(this);
         this.state = {
             isOpen: false
         };
@@ -25,10 +28,14 @@ export default class Header extends React.Component {
         });
     }
 
+    onLogout() {
+        this.props.dispatch(logout());
+    }
+
     render() {
         return (
             <Navbar className='fixed-top' color="light" light expand="md">
-                <NavLink to="/" className="navbar-brand">
+                <NavLink to="/timer" className="navbar-brand">
                     Pomo App
                 </NavLink>
                 <NavbarToggler onClick={this.toggle}/>
@@ -54,18 +61,28 @@ export default class Header extends React.Component {
                                 Settings
                             </NavLink>
                         </NavItem>
+                        <NavTimerV1
+                            location={this.props.location}
+                        />
                     </Nav>
                     <Nav navbar>
                         <NavItem>
-                            <NavLink className='nav-link' to="/logout">
+                            <NavLink
+                                onClick={this.onLogout}
+                                className='nav-link'
+                                to='/'
+                            >
                                 Logout
                             </NavLink>
                         </NavItem>
                     </Nav>
                 </Collapse>
+
             </Navbar>
 
         );
     }
 }
+
+export default connect()(Header);
 //todo implement logout button

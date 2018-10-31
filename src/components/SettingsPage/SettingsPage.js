@@ -18,25 +18,6 @@ class SettingsPage extends React.Component {
         this.removeBlock = this.removeBlock.bind(this);
     }
 
-
-    // componentWillUnmount() {
-    //     // window.addEventListener('beforeunload', function (e) {
-    //     //     // Cancel the event as stated by the standard.
-    //     //     e.preventDefault();
-    //     //     // Chrome requires returnValue to be set.
-    //     //     e.returnValue = '';
-    //     // });
-    //     // console.log(this.state.isBlocking);
-    // }
-
-    // componentDidMount(){
-    //     window.addEventListener('beforeunload', (e)=> {
-    //         e.preventDefault();
-    //         e.returnValue = '';
-    //         alert();
-    //     });
-    // }
-
     removeBlock() {
         this.setState((prevState) => ({isBlocking: --prevState.isBlocking}))
     }
@@ -50,8 +31,8 @@ class SettingsPage extends React.Component {
             <div className='container mt-6 pt-3'>
                 <Prompt
                     when={this.state.isBlocking > 0}
-                    message={location =>
-                        `Are you sure you want to go to ${location.pathname}`
+                    message={() =>
+                        'Some fields are incorrectly set and won\'t be saved'
                     }
                 />
 
@@ -73,7 +54,6 @@ class SettingsPage extends React.Component {
         );
     }
 }
-
 
 
 export default SettingsPage;
