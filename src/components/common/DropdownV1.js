@@ -1,11 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Downshift from 'downshift';
-import './../../styles/components/Dropdown.css';
 import {getNames} from "./apiCalls";
 import {changeName} from "../../actions/timer";
 import XIcon from './XIcon';
 import ArrowIcon from './ArrowIcon';
+import '../../styles/components/common/dropdown.css';
 
 class DropdownV1 extends React.Component {
     constructor(props) {
@@ -62,7 +62,7 @@ class DropdownV1 extends React.Component {
                         <div className='position-relative'>
                             <input {...getInputProps({
                                 disabled: timerRunning,
-                                placeholder: 'Enter session name',
+                                placeholder: 'Enter name',
                                 className: `dropdown__input ${isOpen ? ' dropdown__input--is-open' : undefined}
                                  ${timerRunning ? 'dropdown__input--disabled' : ' dropdown__input--not-disabled'}`
                             })} />

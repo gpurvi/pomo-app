@@ -8,7 +8,7 @@ const EditRow = ({firstCol, secCol, thirdCol, id, deleteOnClick, onError, rename
         <td>{secCol}</td>
         <td>{thirdCol}</td>
         <td colSpan={2} className='text-center'>
-            <div className='d-inline-block mr-3'>
+            <div className='d-inline-block mr-0  mr-sm-3'>
                 <Rename
                     renameOnClick={renameOnClick}
                     onError={onError}
@@ -17,7 +17,7 @@ const EditRow = ({firstCol, secCol, thirdCol, id, deleteOnClick, onError, rename
                     initValue={firstCol}
                 />
             </div>
-            <div className='d-inline-block ml-3'>
+            <div className='d-inline-block mt-1 mt-sm-0 mt-sm-0 ml-0 ml-sm-3'>
                 <Delete
                     deleteOnClick={deleteOnClick}
                     onError={onError}

@@ -2,8 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import configureStore from './store/configureStore';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/bootstrap-flaty.min.css';
 import './styles/components/modal.css';
+import './styles/components/loader.css';
+import './styles/utils.css';
+import './styles/components/chart-page.css';
 // import './styles/components/login-page.css';
 // import './styles/components/sign-page.css';
 import AppRouter from './routers/AppRouters';
@@ -21,6 +25,7 @@ import {login} from "./actions/auth";
 //
 
 // getAppState().then((data)=> console.log(data));
+
 
 const store = configureStore();
 

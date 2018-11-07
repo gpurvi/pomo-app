@@ -11,6 +11,8 @@ import isDate from 'date-fns/is_date';
 import SimpleButton from "../buttons/SimpleButton";
 import {getMinDate} from "./apiCalls";
 
+import './../../styles/components/common/datepicker.css';
+
 export default class DatePickerV1 extends React.Component {
     constructor(props) {
         super(props);
@@ -138,8 +140,9 @@ export default class DatePickerV1 extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
+            <div className='datepicker'>
                 <DatePicker
+
                     minDate={this.state.minDate}
                     maxDate={this.maxDate}
                     maxDetail={this.props.maxDetail}
@@ -147,9 +150,10 @@ export default class DatePickerV1 extends React.Component {
                     value={this.props.date}
                 />
                 <div
-                    className='btn-group ml-1'
+                    className='btn-group ml-1 '
                     role='group'
                 >
+
                     <SimpleButton
                         disabled={this.state.prevDisabled}
                         dataAttr="prev"
@@ -170,7 +174,7 @@ export default class DatePickerV1 extends React.Component {
                         dataAttr="today"/>
                     }
                 </div>
-            </React.Fragment>
+            </div>
         )
     }
 }

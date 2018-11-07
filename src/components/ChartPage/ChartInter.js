@@ -4,6 +4,7 @@ import isDate from 'date-fns/is_date';
 import format from 'date-fns/format';
 import ChartButtons from "./ChartButtons";
 import ChartHeader from "./ChartHeader";
+import LoadingCircle from "../common/LoadingCircle";
 
 export default class ChartInter extends React.Component {
 
@@ -39,11 +40,12 @@ export default class ChartInter extends React.Component {
             date = isDate(propsDate) ? format(propsDate, 'YYYY') : '';
         }
         return (
-            <div className='container mt-5 mb-5'>
+            <div className='t-3 mb-3 mt-sm-4 mb-sm-4'>
                 <div className='text-center'>
                     <ChartHeader header={this.props.header} date={date}/>
                 </div>
-                <div className='mt-2'>
+                <div className='mt-2 position-relative'>
+                    <LoadingCircle height='h-100' loading={this.props.loading}/>
                     <Chart
                         sessionsLabel={this.props.sessionsLabel}
                         durationsLabel={this.props.durationsLabel}

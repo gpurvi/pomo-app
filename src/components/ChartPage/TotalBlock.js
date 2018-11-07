@@ -10,14 +10,19 @@ export default class TotalBlock extends React.Component {
             totalHours: 0,
             averageSessions: 0,
             averageHours: 0,
-            error: ''
+            error: '',
+            loading: false
         };
     }
 
     async componentDidMount() {
+        this.setState(() => ({loading: true}));
         try {
             const total = await getTotal();
-            this.setState(() => ({...total}));
+            this.setState(() => ({
+                ...total,
+                loading: false
+            }));
         } catch (err) {
             this.setState(() => ({error: err.message}));
         }

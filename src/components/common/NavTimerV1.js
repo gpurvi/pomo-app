@@ -33,7 +33,7 @@ class NavTimerV1 extends React.Component {
         return (
             <React.Fragment>
                 {showTimer &&
-                <span className="ml-4 navbar-text text-danger font-weight-bold">
+                <span className="d-none d-md-inline ml-4 navbar-text text-danger font-weight-bold">
                     {timerStarted ? 'Session timer: ' : 'Break timer: '}
                     <TimerBlock
                         small={true}

@@ -1,0 +1,5 @@
+@media (max-width: 407px){
+    .chart-buttons .btn-group {
+        margin-top: 0.25rem !important;
+    }
+}

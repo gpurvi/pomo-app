@@ -2,7 +2,7 @@ import React from 'react';
 import SessionsTable from "./SessionsTable";
 import DatePickerV1 from "../common/DatePickerV1";
 
-const DateSessions = ({onDateChange, date, sessions}) => (
+const DateSessions = ({onDateChange, date, sessions, loading}) => (
     <div>
         <div className='mt-4 mb-3 text-center'>
             <DatePickerV1
@@ -13,7 +13,7 @@ const DateSessions = ({onDateChange, date, sessions}) => (
                 maxDetail='month'
             />
         </div>
-        <SessionsTable sessionData={sessions}/>
+        <SessionsTable sessionData={sessions} loading={loading}/>
     </div>
 );
 

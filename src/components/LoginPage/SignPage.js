@@ -4,7 +4,7 @@ import {
 } from "react-router-dom";
 import {Form, FormGroup, Row, Button} from 'reactstrap';
 import {Link} from 'react-router-dom';
-import './../../styles/components/sign-page.css';
+import '../../styles/components/LoginPage/sign-page.css';
 import SimpleInput from "./SimpleInput";
 import {emailRegex} from "../../utils/emailRegex";
 
@@ -19,6 +19,7 @@ class SignPage extends React.Component {
             lastName: '',
             lastNameInvalid: false,
             lastNameValid: false,
+
             email: '',
             emailInvalid: false,
             emailValid: false,
@@ -293,7 +294,7 @@ class SignPage extends React.Component {
                     </FormGroup>
                     <FormGroup>
                         <Button
-                            color='success'
+                            color='primary'
                             size='lg'
                             block
                             onClick={this.onSubmit}
@@ -304,7 +305,6 @@ class SignPage extends React.Component {
                 </Form>
                 <div className="text-center">Already have an account?
                     <Link
-                        // onClick={this.onLogout}
                         to='/'
                     > Sign in
                     </Link>

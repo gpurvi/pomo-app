@@ -1,11 +1,9 @@
 import React from 'react';
-import {Form, FormGroup, Label, Button, Input, FormFeedback, FormText} from 'reactstrap';
+import {Form, FormGroup, Label, Button, Input, FormFeedback} from 'reactstrap';
 import {connect} from 'react-redux';
-import {NavLink} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {login} from "../../actions/auth";
-import './../../styles/components/login-page.css';
-
-// import EmailInput from "./EmailInput";
+import '../../styles/components/LoginPage/login-page.css';
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -14,7 +12,8 @@ class LoginPage extends React.Component {
             username: '',
             password: '',
             userInvalid: false,
-            passInvalid: false
+            passInvalid: false,
+            failedLogin: false
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -32,8 +31,13 @@ class LoginPage extends React.Component {
             this.setState(() => ({passInvalid: true}));
             return;
         }
-        //todo implement login submit
-        this.props.dispatch(login());
+        //todo implement login submit and on fail feedback
+        setTimeout(() => {
+            this.props.dispatch(login());
+            // this.setState(() => ({failedLogin: true}));
+        }, 1000);
+
+
     }
 
     onFocus(e) {
@@ -61,7 +65,7 @@ class LoginPage extends React.Component {
         return (
             <div className="wrapper">
                 <Form className="form-signin">
-                    <h2 className="form-signin-heading">Please login</h2>
+                    <h2 className="text-center form-signin-heading">Please login</h2>
                     {/*<EmailInput/>*/}
                     <FormGroup>
                         <Label for='loginEmail'>
@@ -112,6 +116,11 @@ class LoginPage extends React.Component {
                         </FormFeedback>
                     </FormGroup>
 
+                    {this.state.failedLogin &&
+                    (<div className='alert-danger p-2'>
+                        Login failed. Check email or password.
+                    </div>)
+                    }
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
@@ -119,11 +128,11 @@ class LoginPage extends React.Component {
                             id="rememberMe"
                             value="remember-me"
                         />
-                            <label
-                                className="form-check-label"
-                                htmlFor="rememberMe"
-                            > Remember me
-                            </label>
+                        <label
+                            className="form-check-label"
+                            htmlFor="rememberMe"
+                        > Remember me
+                        </label>
                     </div>
                     <Button
                         onClick={this.onSubmit}
@@ -135,10 +144,10 @@ class LoginPage extends React.Component {
                     </Button>
                     <div className='text-size--small mt-4 text-center'>
                         <div>
-                            <span>Forgot </span> <a href="#">User name / password?</a>
+                            <span>Forgot </span> <Link to='/forgot'>password?</Link>
                         </div>
                         <div className='mt-1'>
-                            <span>Create an account? </span> <NavLink to='/sign'>Sign up</NavLink>
+                            <span>Create an account? </span> <Link to='/sign'>Sign up</Link>
                         </div>
                     </div>
                 </Form>

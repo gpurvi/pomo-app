@@ -40,6 +40,7 @@ class DurationSettings extends React.Component {
             <div>
                 <h4>Durations</h4>
                 <SettingInputBlock
+                    label={'Session'}
                     maxValue={360}
                     id='sessionDuration'
                     value={convertedTimer}
@@ -49,6 +50,7 @@ class DurationSettings extends React.Component {
                     name='session'
                 />
                 <SettingInputBlock
+                    label={'Break'}
                     maxValue={360}
                     id='breakDuration'
                     value={convertedBreak}

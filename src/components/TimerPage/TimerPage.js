@@ -19,7 +19,8 @@ export default class TimerPage extends React.Component {
         this.state = {
             date: new Date(),
             sessions: [],
-            error: ''
+            error: '',
+            loading: false
         };
     }
 
@@ -43,9 +44,10 @@ export default class TimerPage extends React.Component {
     }
 
     async getSessions(date) {
+        this.setState(() => ({loading: true}));
         try {
             const sessions = await getSessions(date);
-            this.setState(() => ({sessions}))
+            this.setState(() => ({sessions, loading: false}))
         } catch (err) {
             this.setState(() => ({error: err.message}))
         }
@@ -60,18 +62,20 @@ export default class TimerPage extends React.Component {
 
     render() {
         return (
-            <div className='container mt-4'>
+            <div className='container mt-7'>
                 <div className="row justify-content-center">
                     <div className='col-md-8 col-lg-6'>
                         <DropdownV1/>
                     </div>
                 </div>
+
                 <TimerBlock small={false} endTimer={this.onStopTimerHandler}/>
                 <TimerButtons endTimer={this.onStopTimerHandler}/>
                 <hr className='mt-5 border-dark'/>
                 <div className="row justify-content-center">
                     <div className="col-md-8">
                         <DateSessions
+                            loading={this.state.loading}
                             date={this.state.date}
                             sessions={this.state.sessions}
                             onDateChange={this.onDateChangeHandler}/>

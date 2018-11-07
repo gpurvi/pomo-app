@@ -7,9 +7,11 @@ import {
     NavbarToggler,
     Nav,
     NavItem,
+    Modal, ModalHeader, ModalBody, ModalFooter, Button
 } from 'reactstrap';
 import NavTimerV1 from "./NavTimerV1";
 import {logout} from "../../actions/auth";
+import {stopTimer} from "../../actions/timer";
 
 class Header extends React.Component {
     constructor(props) {
@@ -17,8 +19,11 @@ class Header extends React.Component {
 
         this.toggle = this.toggle.bind(this);
         this.onLogout = this.onLogout.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.onLogoutModal = this.onLogoutModal.bind(this);
         this.state = {
-            isOpen: false
+            isOpen: false,
+            modal: false
         };
     }
 
@@ -28,7 +33,27 @@ class Header extends React.Component {
         });
     }
 
-    onLogout() {
+    closeModal() {
+        this.setState({
+            modal: false
+        });
+    }
+
+    onLogout(e) {
+        e.preventDefault();
+        if (this.props.timerStarted && !this.props.timerPaused) {
+            this.setState({
+                modal: true
+            });
+        } else {
+            this.props.dispatch(stopTimer());
+            this.props.dispatch(logout());
+        }
+    }
+
+    onLogoutModal(e) {
+        e.preventDefault();
+        this.props.dispatch(stopTimer());
         this.props.dispatch(logout());
     }
 
@@ -77,12 +102,28 @@ class Header extends React.Component {
                         </NavItem>
                     </Nav>
                 </Collapse>
-
+                <Modal
+                    isOpen={this.state.modal}
+                    toggle={this.closeModal}
+                    className={this.props.className}
+                >
+                    <ModalHeader toggle={this.closeModal}>Warning</ModalHeader>
+                    <ModalBody>
+                        If you will logout session timer will be terminated and session won't be saved.
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={this.onLogoutModal}>Logout</Button>{' '}
+                        <Button color="secondary" onClick={this.closeModal}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
             </Navbar>
-
         );
     }
 }
 
-export default connect()(Header);
+const mapStateToProps = (state) => ({
+    ...state.timer
+});
+
+export default connect(mapStateToProps)(Header);
 //todo implement logout button

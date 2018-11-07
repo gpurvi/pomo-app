@@ -4,9 +4,11 @@ import ChartBlock from "./ChartBlock";
 import TotalBlock from "./TotalBlock";
 
 const ChartPage = () => (
-    <React.Fragment>
+    <div className='mt-7'>
         <TotalBlock/>
-        <div className='mt-5'>
+
+        <div className='mt-2 container'>
+            <hr className='border-primary'/>
             <ChartBlock
                 type="line"
                 header="Sessions & hours per day"
@@ -27,7 +29,7 @@ const ChartPage = () => (
             />
         </div>
 
-    </React.Fragment>
+    </div>
 );
 
 export default ChartPage;

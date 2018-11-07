@@ -1,0 +1,32 @@
+.signup-form .form-control {
+    height: 40px;
+    box-shadow: none;
+    /*color: #969fa4;*/
+}
+
+.signup-form .form-control, .btn {
+    border-radius: 3px;
+}
+
+.signup-form {
+    width: 400px;
+    margin: 0 auto;
+    padding: 30px 0;
+}
+
+.signup-form h2 {
+    text-align: center;
+}
+
+.signup-form form {
+    padding: 30px 30px 10px;
+}
+
+.signup-form .form-group {
+    margin-bottom: 22px;
+}
+
+.signup-form .password-hint, .signup-form .invalid-feedback {
+    margin-top: 2px;
+    font-size: 75%;
+}

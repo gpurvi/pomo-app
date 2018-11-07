@@ -1,10 +1,12 @@
 import React from 'react';
 import EditRow from './EditRow';
 import normalizeDuration from './../../utils/normalizeDuration';
+import LoadingCircle from "../common/LoadingCircle";
 
-const EditTable = ({sessions, type, deleteOnClick, onError, renameOnClick}) => {
+const EditTable = ({loading, sessions, type, deleteOnClick, onError, renameOnClick}) => {
     return (
-        <div className='mt-6'>
+        <div className='mt-4 mt-sm-5 position-relative'>
+            <LoadingCircle marginTop='mt-5' height='h-100' loading={loading}/>
 
             <table className="table">
                 <thead>

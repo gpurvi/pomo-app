@@ -80,7 +80,7 @@ class RunSettings extends React.Component {
                             <SettingInput
                                 disabled={this.state.runContinuously}
                                 invalid={this.onInvalid}
-                                maxValue={100}
+                                maxValue={10}
                                 id='notVeryGood'
                                 value={this.props.cycleCount}
                                 addBlock={this.props.addBlock}

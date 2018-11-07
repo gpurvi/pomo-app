@@ -9,6 +9,7 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import NotFoundPage from "../components/common/NotFoundPage";
 import SignPage from "../components/LoginPage/SignPage";
+import ForgotPage from "../components/LoginPage/ForgotPage";
 // import Header from '../components/common/Header';
 // import HeaderRoute from '../components/common/HeaderRoute';
 // import EditRouter from './EditRouter'
@@ -19,7 +20,8 @@ const AppRoutes = () => (
             <Switch>
 
                 <PublicRoute exact path='/' component={LoginPage}/>
-                <PublicRoute exact path='/sign' component={SignPage}/>
+                <PublicRoute path='/sign' component={SignPage}/>
+                <PublicRoute path='/forgot' component={ForgotPage}/>
                 {/*<Route exact path='/' component={LoginPage}/>*/}
                 {/*<Route component={Header}/>*/}
                 <PrivateRoute path='/timer' component={TimerPage}/>

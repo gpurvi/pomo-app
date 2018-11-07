@@ -24,7 +24,8 @@ export default class EditPage extends React.Component {
             sessions: [],
             dayDisabled: true,
             nameDisabled: false,
-            error: ''
+            error: '',
+            loading: false
         };
     }
 
@@ -61,10 +62,13 @@ export default class EditPage extends React.Component {
     }
 
     async getSessions(date, timePeriod = 'day') {
-        // if(timePeriod === ' day')
+        this.setState(() => ({loading: true}));
         try {
             const sessions = await getSessions(date, timePeriod);
-            this.setState(() => ({sessions}))
+            this.setState(() => ({
+                sessions,
+                loading: false
+            }))
         } catch (err) {
             this.onErrorHandler(err.message);
         }
@@ -131,7 +135,7 @@ export default class EditPage extends React.Component {
 
     render() {
         return (
-            <div className='container mt-6 pt-3'>
+            <div className='container mt-7 pt-3'>
                 <div className='row'>
                     <div className="col-6 text-center">
                         <SimpleButton
@@ -151,27 +155,26 @@ export default class EditPage extends React.Component {
                     </div>
                 </div>
 
-                <div className='col-12'>
 
-                    {this.state.editType === 'day' &&
-                    <div className='text-center mt-6'>
-                        <DatePickerV1
-                            onDateChange={this.onDateChangeHandler}
-                            date={this.state.date}
-                            today={true}
-                            maxDetail='month'
-                        />
-                    </div>
-                    }
-
-                    <EditTable
-                        renameOnClick={this.renameOnClickHandler}
-                        deleteOnClick={this.deleteOnClickHandler}
-                        onError={this.onErrorHandler}
-                        getSessions={this.getUpdateSessions}
-                        type={this.state.editType}
-                        sessions={this.state.sessions}/>
+                {this.state.editType === 'day' &&
+                <div className='text-center mt-4 mt-sm-5'>
+                    <DatePickerV1
+                        onDateChange={this.onDateChangeHandler}
+                        date={this.state.date}
+                        today={true}
+                        maxDetail='month'
+                    />
                 </div>
+                }
+
+                <EditTable
+                    loading={this.state.loading}
+                    renameOnClick={this.renameOnClickHandler}
+                    deleteOnClick={this.deleteOnClickHandler}
+                    onError={this.onErrorHandler}
+                    getSessions={this.getUpdateSessions}
+                    type={this.state.editType}
+                    sessions={this.state.sessions}/>
 
 
             </div>

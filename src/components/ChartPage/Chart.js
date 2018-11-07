@@ -1,7 +1,7 @@
 import React from 'react';
 import Chartjs from '../../../node_modules/chart.js/src/chart';
 import isSameDate from '../../utils/isSameDate';
-import isValid from 'date-fns/is_valid';
+import isDate from 'date-fns/is_date';
 
 export default class Chart extends React.Component {
     constructor(props) {
@@ -25,7 +25,6 @@ export default class Chart extends React.Component {
                 borderWidth: 2,
             }
         ];
-
     }
 
     componentDidMount() {
@@ -54,9 +53,10 @@ export default class Chart extends React.Component {
         let prevDate, nowDate;
         nowDate = this.props.fetchedDate;
         prevDate = prevProps.fetchedDate;
+        // console.log(prevDate, nowDate);
 
         // when initial fetch is done check prevProps for null, because initial is null
-        if ((prevDate === null) && isValid(nowDate)) {
+        if ((prevDate === null) && isDate(nowDate)) {
             if (this.props.showSessions) {
                 datasets.push(this.datasets[0]);
                 datasets[0].data = this.props.sessions;
@@ -73,7 +73,7 @@ export default class Chart extends React.Component {
             this.chart.data.labels = this.props.labels;
             this.chart.update();
             // on subsequent check fetchDate eqaulity
-        } else if ((prevDate !== null) && !isSameDate(nowDate)) {
+        } else if ((prevDate !== null) && !isSameDate(nowDate, prevDate)) {
             if (this.props.showSessions) {
                 datasets[0].data = this.props.sessions;
             }
@@ -93,6 +93,7 @@ export default class Chart extends React.Component {
         //  toggle session visibility
         if ((prevProps.showSessions !== this.props.showSessions) && !this.props.showSessions) {
             datasets.shift();
+            // datasets[0].data = [];
             this.chart.update();
         } else if ((prevProps.showSessions !== this.props.showSessions) && this.props.showSessions) {
             datasets.unshift(this.datasets[0]);

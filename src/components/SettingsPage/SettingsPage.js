@@ -28,7 +28,7 @@ class SettingsPage extends React.Component {
 
     render() {
         return (
-            <div className='container mt-6 pt-3'>
+            <div className='container mt-7 pt-3'>
                 <Prompt
                     when={this.state.isBlocking > 0}
                     message={() =>

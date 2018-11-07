@@ -2,7 +2,7 @@ import React from 'react';
 
 const DataRow = (props) => (
     <tr>
-        <td>{props.firstCol}</td>
+        <td className='owerflow-warp--break-word'>{props.firstCol}</td>
         <td>{props.secondCol}</td>
     </tr>
 );

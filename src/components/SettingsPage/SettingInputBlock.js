@@ -18,25 +18,28 @@ export default class SettingInputBlock extends React.Component {
 
 
     render() {
-        const {id, maxValue, value, addBlock, removeBlock, onBlur, name} = this.props;
+        const {id, maxValue, value, addBlock, removeBlock, onBlur, name, label} = this.props;
         return (
             <FormGroup row>
-                <Label for={id} className="col-5 col-form-label">Session timer duration</Label>
+                <Label for={id} className="col-5 col-form-label">{label} timer duration</Label>
                 <div className="col-7">
-                    <SettingInput
-                        invalid={this.onInvalid}
-                        maxValue={maxValue}
-                        id={id}
-                        value={value}
-                        addBlock={addBlock}
-                        removeBlock={removeBlock}
-                        onBlur={onBlur}
-                        name={name}
-                    />
+
+                        <SettingInput
+                            invalid={this.onInvalid}
+                            maxValue={maxValue}
+                            id={id}
+                            value={value}
+                            addBlock={addBlock}
+                            removeBlock={removeBlock}
+                            onBlur={onBlur}
+                            name={name}
+                        />
+
+
                     <FormText
                         className={this.state.invalid ? 'd-none' : ''}
                     >
-                        Enter number from 1 to 360
+                        Enter number from 1 to 360. Number represents minutes.
                     </FormText>
                     <FormFeedback>Must be number from 1 to 360</FormFeedback>
                 </div>

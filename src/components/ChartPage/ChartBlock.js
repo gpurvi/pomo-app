@@ -7,6 +7,7 @@ import getMonth from 'date-fns/get_month';
 import isDate from 'date-fns/is_date';
 import {getSessions} from "../common/apiCalls";
 import isSameDate from "../../utils/isSameDate";
+// import isDate from 'date-fns/is_date';
 
 export default class ChartBlock extends React.Component {
     constructor(props) {
@@ -18,7 +19,8 @@ export default class ChartBlock extends React.Component {
             durations: [],
             date: new Date(),
             fetchedDate: null, //state which changes when data is fetched, need for chart to show right data
-            error: ''
+            error: '',
+            loading: false
         };
 
         this.line = this.props.type === 'line';
@@ -43,7 +45,7 @@ export default class ChartBlock extends React.Component {
         if (isDate(nowDate)) {
             if (!isSameDate(prevDate, nowDate)) {
                 // setTimeout(async ()=>{
-                    await this.getSessionData();
+                await this.getSessionData();
                 // }, 1000);
 
             }
@@ -55,11 +57,15 @@ export default class ChartBlock extends React.Component {
             format(this.state.date, 'YYYY');
         const fetchedDate = this.state.date;
         const timePeriod = this.line ? 'month' : 'year';
+        this.setState(() => ({
+            loading: true
+        }));
         try {
             const sessionData = await getSessions(formatDate, timePeriod);
             this.setState(() => ({
                 ...this.prepareDataForChart(sessionData, fetchedDate),
-                fetchedDate
+                fetchedDate,
+                loading: false
             }));
         } catch (err) {
             this.setState(() => ({
@@ -140,6 +146,7 @@ export default class ChartBlock extends React.Component {
     render() {
         return (
             <ChartInter
+                loading={this.state.loading}
                 header={this.props.header}
                 type={this.props.type}
                 fetchedDate={this.state.fetchedDate}
