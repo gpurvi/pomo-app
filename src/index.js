@@ -49,7 +49,7 @@ import {login} from "./actions/auth";
 // ReactDOM.render(jsx, document.getElementById('root'));
 // // });
 
-
+alert();
 
 if (JSON.parse(localStorage.getItem('auth')) === true) {
     store.dispatch(login());
