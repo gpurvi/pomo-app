@@ -11,6 +11,7 @@ export default (env) => {
         };
     }
     return {
+        registration: '/registration',
         state: 'api/state',
         sessions: 'api/sessions',
         total: 'api/total',

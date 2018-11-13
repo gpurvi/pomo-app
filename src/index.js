@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import configureStore from './store/configureStore';
+import store from './store';
+import axios from 'axios';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/bootstrap-flaty.min.css';
 import './styles/components/modal.css';
@@ -11,27 +12,48 @@ import './styles/components/chart-page.css';
 // import './styles/components/login-page.css';
 // import './styles/components/sign-page.css';
 import AppRouter from './routers/AppRouters';
+// import {checkTokenExists} from "./helpers/auth";
 import {initApp} from "./actions/timer";
+// // import {initApp} from "./actions/timer";
 import {login} from "./actions/auth";
+// import {initAuthFromExistingToken} from "./actions/auth";
 
-// import Dropdown from "./components/common/Dropdown";
-// import DropdownV1 from "./components/common/DropdownV1";
-// import {getAppState} from "./components/common/apiCalls";
-// import {getMinDate} from "./components/common/apiCalls";
-// import {createDummyData} from "./dev/helpers";
-// import {getSessions} from "./components/common/apiCalls";
+// //set default headers for axios
+// let token = document.querySelector('meta[name="csrf-token"]');
+// axios.defaults.headers.common = {
+//     'X-CSRF-TOKEN': token.content,
+//     'X-Requested-With': 'XMLHttpRequest',
+//     'Content-Type': 'application/json' // for development server
+// };
+// // //this also is set for development server
+// axios.defaults.baseURL = 'http://localhost:3000';
+
+// initAuthFromExistingToken();
+
+// store.dispatch(initAuthFromExistingToken());
 //
-// // document.write(createDummyData());
 //
+// const jsx = (
+//     <Provider store={store}>
+//         <AppRouter/>
+//         {/*<Dropdown/>*/}
+//         {/*<TimerBlockRedux*/}
+//         {/*full={true}*/}
+//         {/*/>*/}
+//     </Provider>
+// );
+//
+// // ReactDOM.render(jsx, document.getElementById('root'));
+// // render app after all is loaded
+// // store.dispatch(initApp()).then(() => {
+// ReactDOM.render(jsx, document.getElementById('root'));
+// // });
 
-// getAppState().then((data)=> console.log(data));
-
-
-const store = configureStore();
 
 if (JSON.parse(localStorage.getItem('auth')) === true) {
     store.dispatch(login());
 }
+
 
 const jsx = (
     <Provider store={store}>
@@ -49,7 +71,6 @@ const jsx = (
 store.dispatch(initApp()).then(() => {
     ReactDOM.render(jsx, document.getElementById('root'));
 });
-
 
 
 

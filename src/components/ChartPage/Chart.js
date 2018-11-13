@@ -1,5 +1,5 @@
 import React from 'react';
-import Chartjs from '../../../node_modules/chart.js/src/chart';
+import Chartjs from 'chart.js';
 import isSameDate from '../../utils/isSameDate';
 import isDate from 'date-fns/is_date';
 

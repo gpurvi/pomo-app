@@ -1,12 +1,9 @@
 import React from 'react';
-import {
-    withRouter
-} from "react-router-dom";
-import {Form, FormGroup, Row, Button} from 'reactstrap';
-import {Link} from 'react-router-dom';
 import '../../styles/components/LoginPage/sign-page.css';
-import SimpleInput from "./SimpleInput";
 import {emailRegex} from "../../utils/emailRegex";
+import {postRegistration} from "../common/apiCalls";
+import {Link} from 'react-router-dom';
+import SignForm from "./SignForm";
 
 class SignPage extends React.Component {
     constructor(props) {
@@ -36,7 +33,11 @@ class SignPage extends React.Component {
             passFeedBack2: '',
 
             acceptTerms: false,
-            acceptTermsInvalid: false
+            acceptTermsInvalid: false,
+
+            isWaitingResponse: false,
+            registerSuccess: false,
+            showConfirmation: false
         };
 
 
@@ -46,7 +47,7 @@ class SignPage extends React.Component {
         this.onBlur = this.onBlur.bind(this);
     }
 
-    onSubmit(e) {
+    async onSubmit(e) {
         const fieldReq = 'This field is required';
         let validSubmit = true;
         e.preventDefault();
@@ -88,11 +89,26 @@ class SignPage extends React.Component {
             }));
         }
 
-        //todo implement succseful registration
         if (validSubmit) {
-            this.props.history.push('/');
+            this.setState(() => ({
+                isWaitingResponse: true
+            }));
+            const registerSuccess = await postRegistration({firstName, lastName, email, password: password1});
+            if (registerSuccess === true) {
+                this.setState(() => ({
+                    isWaitingResponse: false,
+                    showConfirmation: true
+                }));
+            } else {
+                this.setState(() => ({
+                    isWaitingResponse: false,
+                    emailInvalid: true,
+                    emailFeedBack: 'Email has already been taken'
+                }));
+            }
         }
     }
+
 
     onBlur(e) {
         const {name, value} = e.target;
@@ -134,9 +150,6 @@ class SignPage extends React.Component {
                 }));
             }
         }
-
-        // //todo implement login submit
-        // this.props.dispatch(login());
     }
 
     onFocus(e) {
@@ -187,132 +200,40 @@ class SignPage extends React.Component {
 
     render() {
         return (
-
-            <div className="signup-form">
-                <Form>
-                    <h2>Register</h2>
-                    <p className="hint-text">Create your account. It's free and only takes a minute.</p>
-                    <Row>
-                        <div className="col-6">
-                            <SimpleInput
-                                invalid={this.state.firstNameInvalid}
-                                value={this.state.firstName}
-                                onFocus={this.onFocus}
-                                onBlur={this.onBlur}
-                                onChange={this.onChange}
-                                feedBack='This field is required'
-                                type="text"
-                                className="form-control"
-                                name='firstName'
-                                placeholder='First Name'
-                                required
-                                valid={this.state.firstNameValid}
-                            />
+            <div>
+                {
+                    this.state.showConfirmation ? (
+                        <div className='mt-5 pt-5 d-flex justify-content-center align-items-center container'>
+                            <div className="card">
+                                <div className="card-body">
+                                    <h5 className="card-title">Please check your email</h5>
+                                    <p className='card-text'>
+                                        We've sent a confirmation e-mail to <b>{this.state.email}</b>. Please click the
+                                        confirmation
+                                        link in
+                                        the e-mail to confirm your e-mail address.
+                                    </p>
+                                    <p className='card-text'>Once you have confirmed your e-mail address,
+                                        you will be able to login to <b>App name here</b>
+                                    </p>
+                                    <Link to="/" className="float-right btn btn-primary">Go to login page</Link>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-6">
-                            <SimpleInput
-                                invalid={this.state.lastNameInvalid}
-                                value={this.state.lastName}
-                                onBlur={this.onBlur}
-                                onFocus={this.onFocus}
-                                onChange={this.onChange}
-                                feedBack='This field is required'
-                                type="text"
-                                className="form-control"
-                                name='lastName'
-                                placeholder='Last Name'
-                                required
-                                valid={this.state.lastNameValid}
-                            />
-                        </div>
-                    </Row>
-
-                    <SimpleInput
-                        invalid={this.state.emailInvalid}
-                        value={this.state.email}
-                        onBlur={this.onBlur}
-                        onFocus={this.onFocus}
-                        onChange={this.onChange}
-                        valid={this.state.emailValid}
-                        feedBack={this.state.emailFeedBack}
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        className="form-control"
-                        required
-                    />
-
-                    <SimpleInput
-                        invalid={this.state.passInvalid1}
-                        value={this.state.password1}
-                        onBlur={this.onBlur}
-                        onFocus={this.onFocus}
-                        onChange={this.onChange}
-                        valid={this.state.passValid1}
-                        feedBack={this.state.passFeedBack1}
-                        type="password"
-                        name="password1"
-                        placeholder="Password"
-                        className="form-control"
-                        required
-                        formText='Password must be at least 5 characters long'
-                    />
-                    <SimpleInput
-                        invalid={this.state.passInvalid2}
-                        value={this.state.password2}
-                        onBlur={this.onBlur}
-                        onFocus={this.onFocus}
-                        onChange={this.onChange}
-                        valid={this.state.passValid2}
-                        feedBack={this.state.passFeedBack2}
-                        type="password"
-                        name="password2"
-                        placeholder="Confirm Password"
-                        className="form-control"
-                        required
-                    />
-                    <FormGroup>
-
-                        <div
-                            className={`form-check form-check-inline ${this.state.acceptTermsInvalid ? 'border-bottom border-danger' : ''}`}>
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="acceptTerms"
-                                value="acceptTerms"
-                                name="acceptTerms"
-                                checked={this.state.acceptTerms}
-                                onChange={this.onChange}
-                            />
-                            <label
-                                className="form-check-label"
-                                htmlFor="acceptTerms"
-                            >
-                                I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a>
-                            </label>
-                        </div>
-                    </FormGroup>
-                    <FormGroup>
-                        <Button
-                            color='primary'
-                            size='lg'
-                            block
-                            onClick={this.onSubmit}
-                        >
-                            Register Now
-                        </Button>
-                    </FormGroup>
-                </Form>
-                <div className="text-center">Already have an account?
-                    <Link
-                        to='/'
-                    > Sign in
-                    </Link>
-                </div>
+                    ) : (
+                        <SignForm
+                            {...this.state}
+                            onFocus={this.onFocus}
+                            onBlur={this.onBlur}
+                            onSubmit={this.onSubmit}
+                            onChange={this.onChange}
+                        />
+                    )
+                }
             </div>
         );
     }
 
 }
 
-export default withRouter(SignPage);
+export default SignPage;

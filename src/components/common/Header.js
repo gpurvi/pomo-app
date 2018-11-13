@@ -126,4 +126,3 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Header);
-//todo implement logout button

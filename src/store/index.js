@@ -5,16 +5,13 @@ import timerReducer from '../reducers/timer';
 import authReducer from "../reducers/auth";
 // import
 
-
-export default () => {
-    return createStore(
-        combineReducers({
-            timer: timerReducer,
-            auth: authReducer
-        }),
-        composeWithDevTools(applyMiddleware(thunk))
-    )
-};
+export default createStore(
+    combineReducers({
+        timer: timerReducer,
+        auth: authReducer
+    }),
+    composeWithDevTools(applyMiddleware(thunk))
+)
 
 // import {combineReducers, createStore, applyMiddleware} from "redux";
 // import thunk from 'redux-thunk';

@@ -1,14 +1,17 @@
+import axios from 'axios';
 import format from 'date-fns/format';
 import url from '../urls';
 import {reduceNames} from "../../dev/helpers";
 import {reduceSessions, reduceSessionsByTimePeriod} from "../../utils/reduceSessions";
-import starwarsName from 'startwars-names';
 
 const env = 'dev';
 const urls = url(env);
+//token for laravel
+// const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 //get by date sessions
 export const getSessions = async (date, timePeriod = 'day') => {
+
     let response;
     if (env === 'dev') {
         if (timePeriod === 'day') {
@@ -42,6 +45,7 @@ export const getSessions = async (date, timePeriod = 'day') => {
             }
         }
     }
+
 };
 //get by id sessions
 // export const getSessionsId = async (id) => {
@@ -215,3 +219,62 @@ export const getMinDate = async () => {
         }
     }
 };
+
+//POST sign up data to server
+export const postRegistration = async (signUpData) => {
+
+    // return new Promise((resolve) => {
+    //     setTimeout(() => {
+    //         resolve(false);
+    //     }, 2000)
+    // });
+
+    // 'Email has already been taken';
+
+    const {firstName, lastName, email, password} = signUpData;
+    const formData = new FormData();
+    //get this token from index.page. it is set in meta tag
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('email', email);
+    formData.append('password', password);
+    const init = {
+        method: "POST",
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': token
+        }
+    };
+    const response = await fetch('/registration', init);
+    if (response.status >= 400) {
+        throw(new Error('Error sending registration data'))
+    } else {
+        return response;
+    }
+};
+
+// //POST signInUser
+// export const postSignIn = async (credentials) => {
+//     const {email, password} = credentials;
+//     const formData = new FormData();
+//     //get this token from index.page. it is set in meta tag
+//     formData.append('email', email);
+//     formData.append('password', password);
+//     const init = {
+//         method: "POST",
+//         body: formData,
+//         headers: {
+//             'X-CSRF-TOKEN': token,
+//             'X-Requested-With': 'XMLHttpRequest'
+//         }
+//     };
+//     const response = await fetch('/signin', init);
+//     if (response.status >= 400) {
+//         throw(new Error(''))
+//     } else {
+//         return response;
+//     }
+// };
+
+

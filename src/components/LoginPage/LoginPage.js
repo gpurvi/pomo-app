@@ -21,7 +21,7 @@ class LoginPage extends React.Component {
         this.onChange = this.onChange.bind(this);
     }
 
-    onSubmit(e) {
+    async onSubmit(e) {
         e.preventDefault();
         const {username, password} = this.state;
         if (username === '') {
@@ -31,11 +31,19 @@ class LoginPage extends React.Component {
             this.setState(() => ({passInvalid: true}));
             return;
         }
-        //todo implement login submit and on fail feedback
+
+
         setTimeout(() => {
             this.props.dispatch(login());
             // this.setState(() => ({failedLogin: true}));
         }, 1000);
+        //todo implement login submit and on fail feedback
+        // setTimeout(() => {
+        // const response = await this.props.dispatch(signInUser({username, password}));
+
+        // console.log(response);
+        // this.setState(() => ({failedLogin: true}));
+        // }, 1000);
 
 
     }
@@ -117,8 +125,8 @@ class LoginPage extends React.Component {
                     </FormGroup>
 
                     {this.state.failedLogin &&
-                    (<div className='alert-danger p-2'>
-                        Login failed. Check email or password.
+                    (<div className='text-center alert-danger p-2'>
+                        <b>Login failed. Check email or password.</b>
                     </div>)
                     }
                     <div className="form-check form-check-inline">

@@ -179,7 +179,6 @@ export const tick = () => ({
     type: 'TICK'
 });
 
-//todo save changes to name on server
 //CHANGE_NAME
 export const changeName = (sessionName) => {
     const sessionState = JSON.parse(localStorage.getItem('sessionState'));
