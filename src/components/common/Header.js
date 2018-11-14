@@ -10,7 +10,7 @@ import {
     Modal, ModalHeader, ModalBody, ModalFooter, Button
 } from 'reactstrap';
 import NavTimerV1 from "./NavTimerV1";
-import {logout} from "../../actions/auth";
+import {logoutUser} from "../../actions/auth";
 import {stopTimer} from "../../actions/timer";
 
 class Header extends React.Component {
@@ -47,14 +47,14 @@ class Header extends React.Component {
             });
         } else {
             this.props.dispatch(stopTimer());
-            this.props.dispatch(logout());
+            this.props.dispatch(logoutUser());
         }
     }
 
     onLogoutModal(e) {
         e.preventDefault();
         this.props.dispatch(stopTimer());
-        this.props.dispatch(logout());
+        this.props.dispatch(logoutUser());
     }
 
     render() {

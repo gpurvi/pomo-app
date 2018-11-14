@@ -1,12 +1,16 @@
 import React from 'react';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 
-const LoadingButton = (props) => (
-    <button {...props}>
-        <div className="lds-ring--small">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+export const LoadingButton = ({text, onClick, isWaitingResponse}) => (
+    <button
+        className='btn btn-primary btn-lg btn-block'
+        onClick={onClick}
+    >
+        {isWaitingResponse ? (
+            <FontAwesomeIcon size="1x" icon={faSpinner} spin/>
+        ) : (
+            <span>{text}</span>
+        )}
     </button>
 );

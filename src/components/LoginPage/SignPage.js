@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../styles/components/LoginPage/sign-page.css';
 import {emailRegex} from "../../utils/emailRegex";
-import {postRegistration} from "../common/apiCalls";
+import {registerUser} from "../common/apiCalls";
 import {Link} from 'react-router-dom';
 import SignForm from "./SignForm";
 
@@ -39,7 +39,6 @@ class SignPage extends React.Component {
             registerSuccess: false,
             showConfirmation: false
         };
-
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onFocus = this.onFocus.bind(this);
@@ -89,26 +88,34 @@ class SignPage extends React.Component {
             }));
         }
 
+        //todo implement cases for server validation
         if (validSubmit) {
             this.setState(() => ({
                 isWaitingResponse: true
             }));
-            const registerSuccess = await postRegistration({firstName, lastName, email, password: password1});
-            if (registerSuccess === true) {
-                this.setState(() => ({
-                    isWaitingResponse: false,
-                    showConfirmation: true
-                }));
-            } else {
-                this.setState(() => ({
-                    isWaitingResponse: false,
-                    emailInvalid: true,
-                    emailFeedBack: 'Email has already been taken'
-                }));
+            try {
+                const response = await registerUser({firstName, lastName, email, password: password1});
+                // Successful registration, show feedback about email
+                if (response.status === 200) {
+                    this.setState(() => ({
+                        isWaitingResponse: false,
+                        showConfirmation: true
+                    }));
+                }
+            } catch (err) {
+                // console.log(err.response.status);
+                if (err.response.status === 422) {
+                    // Invalid data was supplied to the API, show validation errors
+                    this.setState(() => ({
+                        isWaitingResponse: false,
+                        emailInvalid: true,
+                        emailFeedBack: 'Email has already been taken'
+                    }));
+                }
             }
+
         }
     }
-
 
     onBlur(e) {
         const {name, value} = e.target;

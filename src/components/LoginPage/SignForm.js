@@ -2,8 +2,7 @@ import React from 'react';
 import {Form, FormGroup, Row} from 'reactstrap';
 import SimpleInput from "./SimpleInput";
 import {Link} from 'react-router-dom';
-import {faSpinner} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {LoadingButton} from "../buttons/LoadingButton";
 
 const SignForm = (props) => (
     <div className="signup-form">
@@ -110,16 +109,11 @@ const SignForm = (props) => (
                 </div>
             </FormGroup>
             <FormGroup>
-                <button
-                    className='btn btn-primary btn-lg btn-block'
+                <LoadingButton
+                    text='Register Now'
                     onClick={props.onSubmit}
-                >
-                    {props.isWaitingResponse ? (
-                        <FontAwesomeIcon size="1x" icon={faSpinner} spin/>
-                    ) : (
-                        <span>Register Now</span>
-                    )}
-                </button>
+                    isWaitingResponse={props.isWaitingResponse}
+                />
             </FormGroup>
         </Form>
         <div className="text-center">Already have an account?

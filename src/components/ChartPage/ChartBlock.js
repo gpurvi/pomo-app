@@ -7,7 +7,7 @@ import getMonth from 'date-fns/get_month';
 import isDate from 'date-fns/is_date';
 import {getSessions} from "../common/apiCalls";
 import isSameDate from "../../utils/isSameDate";
-// import isDate from 'date-fns/is_date';
+import {reduceSessionsByTimePeriod} from "../../utils/reduceSessions";
 
 export default class ChartBlock extends React.Component {
     constructor(props) {
@@ -61,13 +61,15 @@ export default class ChartBlock extends React.Component {
             loading: true
         }));
         try {
-            const sessionData = await getSessions(formatDate, timePeriod);
+            const response = await getSessions(formatDate, timePeriod);
+            const sessionData = reduceSessionsByTimePeriod(response.data, timePeriod);
             this.setState(() => ({
                 ...this.prepareDataForChart(sessionData, fetchedDate),
                 fetchedDate,
                 loading: false
             }));
         } catch (err) {
+            //todo waht to do with server errors???
             this.setState(() => ({
                 error: err.message
             }));

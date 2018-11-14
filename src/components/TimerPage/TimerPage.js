@@ -46,9 +46,11 @@ export default class TimerPage extends React.Component {
     async getSessions(date) {
         this.setState(() => ({loading: true}));
         try {
-            const sessions = await getSessions(date);
+            const response = await getSessions(date);
+            const sessions = response.data;
             this.setState(() => ({sessions, loading: false}))
         } catch (err) {
+            //todo impelment server errors???
             this.setState(() => ({error: err.message}))
         }
     }

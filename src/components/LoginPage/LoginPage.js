@@ -1,56 +1,64 @@
 import React from 'react';
-import {Form, FormGroup, Label, Button, Input, FormFeedback} from 'reactstrap';
+import {Form, FormGroup, Label, Input, FormFeedback} from 'reactstrap';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-import {login} from "../../actions/auth";
+import {signInUser} from "../../actions/auth";
 import '../../styles/components/LoginPage/login-page.css';
+import {LoadingButton} from "../buttons/LoadingButton";
 
 class LoginPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '',
+            email: '',
             password: '',
             userInvalid: false,
             passInvalid: false,
-            failedLogin: false
+            failedLogin: false,
+            isWaitingResponse: false
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.valideFormFields = this.valideFormFields.bind(this);
     }
 
     async onSubmit(e) {
         e.preventDefault();
-        const {username, password} = this.state;
-        if (username === '') {
+        const {email, password} = this.state;
+        if (!this.valideFormFields(email, password)) {
+            try {
+                this.setState(() => ({isWaitingResponse: true}));
+                // setTimeout(async () => {
+                await this.props.dispatch(signInUser({email, password}));
+                // }, 1000);
+            } catch (err) {
+                //todo implement more advanced cases when server fails??
+                this.setState(() => ({
+                    isWaitingResponse: false,
+                    failedLogin: true
+                }));
+            }
+        }
+    }
+
+    valideFormFields(email, password) {
+        let invalid = false;
+        if (email === '') {
             this.setState(() => ({userInvalid: true}));
+            invalid = true;
         }
         if (password === '') {
             this.setState(() => ({passInvalid: true}));
-            return;
+            invalid = true;
         }
-
-
-        setTimeout(() => {
-            this.props.dispatch(login());
-            // this.setState(() => ({failedLogin: true}));
-        }, 1000);
-        //todo implement login submit and on fail feedback
-        // setTimeout(() => {
-        // const response = await this.props.dispatch(signInUser({username, password}));
-
-        // console.log(response);
-        // this.setState(() => ({failedLogin: true}));
-        // }, 1000);
-
-
+        return invalid;
     }
 
     onFocus(e) {
         const {name} = e.target;
-        if (name === 'username') {
+        if (name === 'email') {
             this.setState(() => ({userInvalid: false}));
         }
         if (name === 'password') {
@@ -60,16 +68,13 @@ class LoginPage extends React.Component {
 
     onChange(e) {
         const {name, value} = e.target;
-        if (name === 'username') {
-            this.setState(() => ({username: value}));
-        }
-        if (name === 'password') {
-            this.setState(() => ({password: value}));
-        }
+        this.setState(() => ({
+            [name]: value
+        }));
     }
 
     render() {
-        const {username, password, userInvalid, passInvalid} = this.state;
+        const {email, password, userInvalid, passInvalid} = this.state;
         return (
             <div className="wrapper">
                 <Form className="form-signin">
@@ -82,12 +87,12 @@ class LoginPage extends React.Component {
                         <Input
                             onChange={this.onChange}
                             onFocus={this.onFocus}
-                            value={username}
+                            value={email}
                             invalid={userInvalid}
                             id='loginEmail'
                             type="text"
                             className="form-control"
-                            name="username"
+                            name="email"
                             placeholder="Email Address"
                             required
                             autoFocus
@@ -142,14 +147,11 @@ class LoginPage extends React.Component {
                         > Remember me
                         </label>
                     </div>
-                    <Button
+                    <LoadingButton
+                        text='Login'
                         onClick={this.onSubmit}
-                        size='lg'
-                        color='primary'
-                        block
-                    >
-                        Login
-                    </Button>
+                        isWaitingResponse={this.state.isWaitingResponse}
+                    />
                     <div className='text-size--small mt-4 text-center'>
                         <div>
                             <span>Forgot </span> <Link to='/forgot'>password?</Link>

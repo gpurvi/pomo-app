@@ -5,6 +5,7 @@ import EditTable from "./EditTable";
 import SimpleButton from "../buttons/SimpleButton";
 import DatePickerV1 from "../common/DatePickerV1";
 import {patchSessions, deleteSessions} from "../common/apiCalls";
+import {reduceSessions} from "../../utils/reduceSessions";
 
 export default class EditPage extends React.Component {
 
@@ -64,7 +65,8 @@ export default class EditPage extends React.Component {
     async getSessions(date, timePeriod = 'day') {
         this.setState(() => ({loading: true}));
         try {
-            const sessions = await getSessions(date, timePeriod);
+            const response = await getSessions(date, timePeriod);
+            const sessions = reduceSessions(response.data);
             this.setState(() => ({
                 sessions,
                 loading: false

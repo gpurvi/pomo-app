@@ -1,4 +1,4 @@
-import axios from 'axios';
+import Http from './../utils/Http';
 
 export const setToken = token => {
     setLocalStorageToken(token);
@@ -8,23 +8,20 @@ export const setToken = token => {
 const setLocalStorageToken = token => {
     if (!token) {
         localStorage.removeItem('authtoken');
+    } else {
+        localStorage.setItem('authtoken', token);
     }
-
-    localStorage.setItem('authtoken', token);
 };
 
 const setHttpToken = (token) => {
     if (!token) {
-        axios.defaults.headers.common['Authorization'] = null;
+        Http.defaults.headers.common['Authorization'] = null;
+    } else {
+        Http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     }
-
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 };
 
-export const checkTokenExists = () => {
-    const authtoken = localStorage.getItem('authtoken');
-    if (!authtoken) {
-        return Promise.reject(new Error('invalid token'));
-    }
-    return Promise.resolve(authtoken)
+export const clearLocaleStorage = () => {
+    localStorage.removeItem('sessionState');
+    localStorage.removeItem('appState');
 };

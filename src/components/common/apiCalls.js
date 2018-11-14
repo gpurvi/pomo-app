@@ -1,52 +1,49 @@
-import axios from 'axios';
+import Http from './../../utils/Http';
 import format from 'date-fns/format';
 import url from '../urls';
 import {reduceNames} from "../../dev/helpers";
-import {reduceSessions, reduceSessionsByTimePeriod} from "../../utils/reduceSessions";
 
 const env = 'dev';
 const urls = url(env);
-//token for laravel
-// const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+// const CancelToken = Http.CancelToken;
+// let source = CancelToken.source();
+//
+// export const HttpCancel = (msg) => {
+//     source.cancel(msg);
+//     //reassign token
+//     console.log(source.token);
+//     source = CancelToken.source();
+//     console.log(source.token);
+// };
+
 
 //get by date sessions
 export const getSessions = async (date, timePeriod = 'day') => {
-
-    let response;
+    // const CancelToken = Http.CancelToken;
+    // const source = CancelToken.source();
+    let url;
     if (env === 'dev') {
         if (timePeriod === 'day') {
-            response = await fetch(`${urls.sessions}?date=${date}`);
-            if (response.status >= 400) {
-                throw(new Error('Error fetching sessions'))
-            } else {
-                return await response.json()
-            }
+            url = `${urls.sessions}?date=${date}`;
         } else if (timePeriod === 'allTime') {
             //fetch all sessions by name
-            response = await fetch(`${urls.sessions}`);
-            if (response.status >= 400) {
-                throw(new Error('Error fetching sessions'))
-            } else {
-                const sessions = await response.json();
-                return new Promise((resolve) => {
-                    resolve(reduceSessions(sessions));
-                });
-            }
+            url = `${urls.sessions}`;
         } else {
             //fetch sessions in year or month
-            response = await fetch(`${urls.sessions}?q=${date}`);
-            if (response.status >= 400) {
-                throw(new Error('Error fetching sessions'))
-            } else {
-                const sessions = await response.json();
-                return new Promise((resolve) => {
-                    resolve(reduceSessionsByTimePeriod(sessions, timePeriod));
-                });
-            }
+            url = `${urls.sessions}?q=${date}`;
         }
+        return await Http.get(url);
+        // return new Promise(resolve => {
+        //     setTimeout(() => {
+        //         return resolve(Http.get(url));
+        //     }, 1000);
+        // });
     }
 
 };
+
+
 //get by id sessions
 // export const getSessionsId = async (id) => {
 //     const response = await fetch(`${urls.sessions}/${id}`);
@@ -221,60 +218,9 @@ export const getMinDate = async () => {
 };
 
 //POST sign up data to server
-export const postRegistration = async (signUpData) => {
-
-    // return new Promise((resolve) => {
-    //     setTimeout(() => {
-    //         resolve(false);
-    //     }, 2000)
-    // });
-
-    // 'Email has already been taken';
-
-    const {firstName, lastName, email, password} = signUpData;
-    const formData = new FormData();
-    //get this token from index.page. it is set in meta tag
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    formData.append('firstName', firstName);
-    formData.append('lastName', lastName);
-    formData.append('email', email);
-    formData.append('password', password);
-    const init = {
-        method: "POST",
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': token
-        }
-    };
-    const response = await fetch('/registration', init);
-    if (response.status >= 400) {
-        throw(new Error('Error sending registration data'))
-    } else {
-        return response;
-    }
+export const registerUser = async (credentials) => {
+    return await Http.post('/registration', credentials);
 };
 
-// //POST signInUser
-// export const postSignIn = async (credentials) => {
-//     const {email, password} = credentials;
-//     const formData = new FormData();
-//     //get this token from index.page. it is set in meta tag
-//     formData.append('email', email);
-//     formData.append('password', password);
-//     const init = {
-//         method: "POST",
-//         body: formData,
-//         headers: {
-//             'X-CSRF-TOKEN': token,
-//             'X-Requested-With': 'XMLHttpRequest'
-//         }
-//     };
-//     const response = await fetch('/signin', init);
-//     if (response.status >= 400) {
-//         throw(new Error(''))
-//     } else {
-//         return response;
-//     }
-// };
 
 
