@@ -40,7 +40,7 @@ class DropdownV1 extends React.Component {
         const {value, names} = this.state;
         const {timerStarted, breakTimerStarted, sessionName} = this.props;
         const timerRunning = timerStarted || breakTimerStarted;
-
+    console.log(sessionName);
         return (
             <Downshift
                 selectedItem={value}

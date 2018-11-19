@@ -1,4 +1,6 @@
 import React from 'react';
+import {connect} from 'react-redux';
+
 import DateSessions from "./DateSessions";
 import isSameDate from './../../utils/isSameDate';
 import format from 'date-fns/format';
@@ -7,7 +9,8 @@ import TimerBlock from "./TimerBlock";
 import TimerButtons from "./TimerButtons";
 import DropdownV1 from "../common/DropdownV1";
 
-export default class TimerPage extends React.Component {
+
+class TimerPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -89,3 +92,5 @@ export default class TimerPage extends React.Component {
     }
 
 }
+
+export default connect()(TimerPage);

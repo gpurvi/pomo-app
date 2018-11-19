@@ -1,36 +1,47 @@
+// import Http from './../utils/Http';
 import {putState, getSessionState} from "../components/common/apiCalls";
 import {timeLeftInit} from "../utils/timeLeftInit";
 
 //INIT_TIMER
-export const initApp = () => {
-    return async (dispatch) => {
-        const sessionState = JSON.parse(localStorage.getItem('sessionState'));
-        if (sessionState !== null) {
-            // perform check for timer started state and if true init timeLeft
-            const timeLeft = timeLeftInit(sessionState);
-            dispatch({
-                type: 'INIT_TIMER',
-                state: {...sessionState, timeLeft}
-            });
-        } else {
-            try {
-                const sessionState = await getSessionState();
-                // perform check for timer started state and if true init timeLeft
-                const timeLeft = timeLeftInit(sessionState);
-                dispatch({
-                    type: 'INIT_TIMER',
-                    state: {...sessionState, timeLeft}
-                });
-                localStorage.setItem('sessionState', JSON.stringify({...sessionState}));
-                // localStorage.setItem('appState', JSON.stringify({...appState}));
-            } catch (err) {
-                dispatch({
-                    type: 'ERROR',
-                    error: err.message
-                });
-            }
-        }
-    };
+export const initTimer = (sessionState) => (dispatch) => {
+    dispatch({
+        type: 'INIT_TIMER',
+        state: {...sessionState}
+    });
+    localStorage.setItem('sessionState', JSON.stringify({...sessionState}));
+};
+
+// const sessionState = JSON.parse(localStorage.getItem('sessionState'));
+// if (sessionState !== null) {
+//     // perform check for timer started state and if true init timeLeft
+//     const timeLeft = timeLeftInit(sessionState);
+//     dispatch({
+//         type: 'INIT_TIMER',
+//         state: {...sessionState, timeLeft}
+//     });
+// } else {
+//     // const response = await getSessionState();
+//     const sessionState = response.data;
+//     const timeLeft = timeLeftInit(sessionState);
+//     dispatch({
+//         type: 'INIT_TIMER',
+//         state: {...sessionState, timeLeft}
+//     });
+//     localStorage.setItem('sessionState', JSON.stringify({...sessionState}));
+// }
+
+
+//INIT_TIMER_STORAGE
+export const initTimerStorage = () => (dispatch) => {
+    const sessionState = JSON.parse(localStorage.getItem('sessionState'));
+    if (sessionState !== null) {
+        // perform check for timer started state and if true init timeLeft
+        const timeLeft = timeLeftInit(sessionState);
+        dispatch({
+            type: 'INIT_TIMER',
+            state: {...sessionState, timeLeft}
+        });
+    }
 };
 
 //START_TIMER

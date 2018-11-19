@@ -148,18 +148,19 @@ export const postSessions = async (sessionName, duration) => {
 };
 
 export const getSessionState = async () => {
-    if (env === 'dev') {
-        const responseState = await fetch(urls.state);
-        // const minDate = await getMinDate();
-        if (responseState.status >= 400) {
-            throw(new Error('Error fetching state'))
-        } else {
-            return await responseState.json();
-            // return new Promise((resolve) => {
-            //     resolve({sessionState, appState: {minDate}});
-            // });
-        }
-    }
+    return await Http.get(urls.state);
+    // if (env === 'dev') {
+    //     const responseState = await fetch(urls.state);
+    //     // const minDate = await getMinDate();
+    //     if (responseState.status >= 400) {
+    //         throw(new Error('Error fetching state'))
+    //     } else {
+    //         return await responseState.json();
+    //         // return new Promise((resolve) => {
+    //         //     resolve({sessionState, appState: {minDate}});
+    //         // });
+    //     }
+    // }
 };
 
 export const putState = async (modifiedState) => {

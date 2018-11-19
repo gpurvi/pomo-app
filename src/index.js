@@ -10,10 +10,14 @@ import './styles/components/chart-page.css';
 import AppRouter from './routers/AppRouters';
 import {checkAuth} from "./actions/auth";
 // import {checkTokenExists} from "./helpers/auth";
-// import {initApp} from "./actions/timer";
+import {initTimerStorage} from "./actions/timer";
 
 
 store.dispatch(checkAuth());
+
+if (store.getState().auth.authenticated) {
+    store.dispatch(initTimerStorage());
+}
 
 // // ReactDOM.render(jsx, document.getElementById('root'));
 // // render app after all is loaded

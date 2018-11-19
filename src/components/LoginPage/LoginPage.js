@@ -32,7 +32,11 @@ class LoginPage extends React.Component {
                 this.setState(() => ({isWaitingResponse: true}));
                 // setTimeout(async () => {
                 await this.props.dispatch(signInUser({email, password}));
-                // }, 1000);
+                // if (response.status === 201) {
+                //     setTimeout(async () => {
+                //         await this.props.dispatch(initTimer());
+                //     }, 2000);
+                // }
             } catch (err) {
                 //todo implement more advanced cases when server fails??
                 this.setState(() => ({
